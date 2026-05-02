@@ -14,7 +14,10 @@ A general-purpose CLI tool. Currently supports PDF generation, with more command
 - [Commands](#commands)
   - [info](#info)
   - [update](#update)
-  - [pdf convert](#pdf-convert)
+  - [pdf](#pdf)
+    - [convert](#convert)
+  - [screen](#screen)
+    - [flux](#flux)
 - [Environment Variables](#environment-variables)
 - [Running Tests](#running-tests)
 
@@ -140,7 +143,11 @@ bitbard update
 
 Pulls the latest changes from GitHub, reinstalls dependencies, and rebuilds the binary in place. Requires the installation to have been set up via the install script or manual install (a git repository must exist at `~/.bitbard`).
 
-### pdf convert
+### pdf
+
+PDF-related commands.
+
+#### convert
 
 Convert plain text or markdown to a PDF file.
 
@@ -182,6 +189,22 @@ bitbard pdf convert output.pdf --file document.txt
 ```sh
 bitbard pdf convert output.pdf --file document.md
 ```
+
+### screen
+
+Screen-related commands.
+
+#### flux
+
+Toggle a warm screen tint similar to [f.lux](https://justgetflux.com/). Reduces blue light by applying a warm gamma table to all active displays.
+
+```sh
+bitbard screen flux
+```
+
+Each invocation toggles the tint on or off. State is persisted in `~/.config/bitbard/flux.json`.
+
+> **Note:** macOS only. Requires permission to control display gamma (no additional entitlements needed beyond running as the current user).
 
 ## Environment Variables
 

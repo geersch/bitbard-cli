@@ -3,6 +3,7 @@ import { defineCommand, runMain } from 'citty';
 import info from './commands/info.js';
 import update from './commands/update.js';
 import pdf from './commands/pdf/index.js';
+import screen from './commands/screen/index.js';
 
 const main = defineCommand({
   meta: {
@@ -12,6 +13,7 @@ const main = defineCommand({
   },
   subCommands: {
     pdf,
+    screen,
     info,
     update,
   },
