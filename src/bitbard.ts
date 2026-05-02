@@ -11,9 +11,9 @@ const main = defineCommand({
     description: 'Bitbard CLI tool',
   },
   subCommands: {
+    pdf,
     info,
     update,
-    pdf,
   },
 });
 

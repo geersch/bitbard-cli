@@ -33,6 +33,8 @@ jobs:
         run: yarn install --immutable
       - name: Check code formatting
         run: yarn format --check
+      - name: Lint
+        run: yarn oxlint
       - name: Build
         run: yarn build
       - name: Run tests

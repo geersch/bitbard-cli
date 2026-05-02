@@ -1,0 +1,21 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  // Default plugins: eslint, typescript, unicorn, oxc
+  // Adding vitest for test file rules
+  "plugins": ["eslint", "typescript", "unicorn", "oxc", "vitest"],
+  "categories": {
+    "correctness": "error"
+  },
+  "overrides": [
+    {
+      "files": ["**/*.spec.ts"],
+      "plugins": ["eslint", "typescript", "unicorn", "oxc", "vitest"],
+      "rules": {
+        "vitest/no-disabled-tests": "warn",
+        "vitest/no-focused-tests": "error",
+        "vitest/expect-expect": "warn",
+        "vitest/require-mock-type-parameters": "off"
+      }
+    }
+  ]
+}
