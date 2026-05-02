@@ -16,9 +16,9 @@ function run(cmd: string, cwd: string): Promise<void> {
 }
 
 function getOutput(cmd: string, cwd: string): Promise<string> {
-  const { promise, resolve, reject } = Promise.withResolvers<string>();
-  exec(cmd, { cwd, encoding: 'utf8' }, (err, stdout) => (err ? reject(err) : resolve(stdout.trim())));
-  return promise;
+  return new Promise((resolve, reject) => {
+    exec(cmd, { cwd, encoding: 'utf8' }, (err, stdout) => (err ? reject(err) : resolve(stdout.trim())));
+  });
 }
 
 export default defineCommand({
