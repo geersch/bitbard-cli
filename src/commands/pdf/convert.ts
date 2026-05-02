@@ -1,11 +1,12 @@
 import { defineCommand } from "citty";
 import { readFile } from "node:fs/promises";
 import { savePdf } from "../../util/pdf/save-pdf.js";
+import { saveMarkdownPdf } from "../../util/pdf/save-markdown-pdf.js";
 
 export default defineCommand({
   meta: {
     name: "convert",
-    description: "Convert text to a PDF file",
+    description: "Convert text or markdown file to a PDF file",
   },
   args: {
     output: {
@@ -19,10 +20,17 @@ export default defineCommand({
       description: "Inline text to convert (mutually exclusive with --file)",
       required: false,
     },
+    markdown: {
+      type: "boolean",
+      alias: ["m"],
+      description: "Treat inline --text as markdown (ignored when --file is used)",
+      required: false,
+      default: false,
+    },
     file: {
       type: "string",
       alias: ["f"],
-      description: "Path to a .txt file to convert (mutually exclusive with --text)",
+      description: "Path to a .txt or .md file to convert (mutually exclusive with --text)",
       required: false,
     },
   },
@@ -31,21 +39,25 @@ export default defineCommand({
       console.error("Error: provide either --text or --file, not both.");
       process.exit(1);
     }
-    if (!args.file && !args.text) {
-      console.error("Error: provide --text <string> or --file <path>.");
-      process.exit(1);
-    }
 
     let text: string;
+    let isMarkdown = false;
 
     if (args.file) {
-      if (!args.file.endsWith(".txt")) {
-        console.error("Error: --file must be a .txt file.");
+      isMarkdown = args.file.endsWith(".md");
+      const isText = args.file.endsWith(".txt");
+
+      if (!isText && !isMarkdown) {
+        console.error("Error: --file must be a .txt or .md file.");
         process.exit(1);
       }
       text = await readFile(args.file, "utf8");
+    } else if (args.text)  {
+      text = args.text .replace(/\\n/g, "\n").replace(/\\t/g, "\t");
+      isMarkdown = !!args.markdown;
     } else {
-      text = args.text as string;
+      console.error("Error: provide --text <string> or --file <path>.");
+      process.exit(1);
     }
 
     const output = args.output as string;
@@ -54,7 +66,12 @@ export default defineCommand({
       process.exit(1);
     }
 
-    await savePdf(text, output);
+    if (isMarkdown) {
+      await saveMarkdownPdf(text, output);
+    } else {
+      await savePdf(text, output);
+    }
+
     console.log(`PDF saved to ${output}`);
   },
 });

@@ -19,9 +19,11 @@
   },
   "dependencies": {
     "citty": "^0.2.2",
+    "marked": "^18.0.3",
     "pdfkit": "^0.18.0"
   },
   "devDependencies": {
+    "@types/marked": "^6.0.0",
     "@types/node": "^25.6.0",
     "@types/pdfkit": "^0.17.6",
     "typescript": "^6.0.3",

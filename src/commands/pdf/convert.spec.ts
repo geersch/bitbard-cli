@@ -2,10 +2,15 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { runCommand } from "citty";
 import convertCmd from "./convert.js";
 import { savePdf } from "../../util/pdf/save-pdf.js";
+import { saveMarkdownPdf } from "../../util/pdf/save-markdown-pdf.js";
 import { readFile } from "node:fs/promises";
 
 vi.mock("../../util/pdf/save-pdf.js", () => ({
   savePdf: vi.fn().mockResolvedValue(undefined),
+}));
+
+vi.mock("../../util/pdf/save-markdown-pdf.js", () => ({
+  saveMarkdownPdf: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock("node:fs/promises", () => ({
@@ -40,6 +45,13 @@ describe("pdf convert command", () => {
     expect(savePdf).toHaveBeenCalledWith("text from file", "output.pdf");
   });
 
+  it("reads a .md file and converts it to a styled PDF", async () => {
+    await runCommand(convertCmd, { rawArgs: ["--file", "input.md", "output.pdf"] });
+    expect(readFile).toHaveBeenCalledWith("input.md", "utf8");
+    expect(saveMarkdownPdf).toHaveBeenCalledWith("text from file", "output.pdf");
+    expect(savePdf).not.toHaveBeenCalled();
+  });
+
   it("exits with error when both --text and --file are provided", async () => {
     await expect(
       runCommand(convertCmd, { rawArgs: ["--text", "Hello", "--file", "input.txt", "output.pdf"] })
@@ -54,11 +66,11 @@ describe("pdf convert command", () => {
     expect(errorSpy).toHaveBeenCalledWith("Error: provide --text <string> or --file <path>.");
   });
 
-  it("exits with error when --file is not a .txt file", async () => {
+  it("exits with error when --file is not a .txt or .md file", async () => {
     await expect(
-      runCommand(convertCmd, { rawArgs: ["--file", "input.md", "output.pdf"] })
+      runCommand(convertCmd, { rawArgs: ["--file", "input.docx", "output.pdf"] })
     ).rejects.toThrow("process.exit called");
-    expect(errorSpy).toHaveBeenCalledWith("Error: --file must be a .txt file.");
+    expect(errorSpy).toHaveBeenCalledWith("Error: --file must be a .txt or .md file.");
   });
 
   it("exits with error when output is not a .pdf file", async () => {

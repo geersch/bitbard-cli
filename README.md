@@ -101,7 +101,7 @@ Then remove the `PATH` export line the installer added to your shell profile (`~
 
 ### pdf convert
 
-Convert plain text to a PDF file.
+Convert plain text or markdown to a PDF file.
 
 ```
 bitbard pdf convert <output.pdf> [options]
@@ -111,9 +111,12 @@ bitbard pdf convert <output.pdf> [options]
 |---|---|
 | `<output.pdf>` | Path to the output PDF file (required, must end in `.pdf`) |
 | `--text`, `-t` | Inline text to convert |
-| `--file`, `-f` | Path to a `.txt` file to convert |
+| `--markdown`, `-m` | Treat inline `--text` as markdown (ignored when `--file` is used) |
+| `--file`, `-f` | Path to a `.txt` or `.md` file to convert |
 
 `--text` and `--file` are mutually exclusive. You must provide exactly one.
+
+When using `--file`, the format is detected automatically from the file extension (`.txt` for plain text, `.md` for markdown).
 
 **Convert inline text:**
 
@@ -121,10 +124,22 @@ bitbard pdf convert <output.pdf> [options]
 bitbard pdf convert output.pdf --text "Hello, world!"
 ```
 
+**Convert inline markdown:**
+
+```sh
+bitbard pdf convert output.pdf --text "# Title\n**bold** and _italic_" --markdown
+```
+
 **Convert a text file:**
 
 ```sh
 bitbard pdf convert output.pdf --file document.txt
+```
+
+**Convert a markdown file:**
+
+```sh
+bitbard pdf convert output.pdf --file document.md
 ```
 
 ## Environment Variables
