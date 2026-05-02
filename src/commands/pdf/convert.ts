@@ -1,5 +1,7 @@
 import { defineCommand } from 'citty';
 import { readFile } from 'node:fs/promises';
+import { chalk } from '../../util/chalk.js';
+import { spinner } from '../../util/spinner.js';
 import { savePdf } from '../../util/pdf/save-pdf.js';
 import { saveMarkdownPdf } from '../../util/pdf/save-markdown-pdf.js';
 
@@ -66,12 +68,18 @@ export default defineCommand({
       process.exit(1);
     }
 
-    if (isMarkdown) {
-      await saveMarkdownPdf(text, output);
-    } else {
-      await savePdf(text, output);
+    const stop = spinner('Generating PDF');
+    try {
+      if (isMarkdown) {
+        await saveMarkdownPdf(text, output);
+      } else {
+        await savePdf(text, output);
+      }
+      stop(`PDF saved to ${chalk.bold(output)}`);
+    } catch (err) {
+      stop('Failed to generate PDF', false);
+      console.error(err instanceof Error ? err.message : String(err));
+      process.exit(1);
     }
-
-    console.log(`PDF saved to ${output}`);
   },
 });
