@@ -1,0 +1,31 @@
+{
+  "name": "text-to-pdf",
+  "version": "1.0.0",
+  "description": "text to pdf converter",
+  "bin": {
+    "bitbard": "./dist/bitbard.js"
+  },
+  "keywords": [
+    "cli"
+  ],
+  "author": "Christophe Geers",
+  "license": "UNLICENSED",
+  "type": "module",
+  "packageManager": "yarn@4.14.1",
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest run",
+    "dev": "vitest"
+  },
+  "dependencies": {
+    "citty": "^0.2.2",
+    "pdfkit": "^0.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "@types/pdfkit": "^0.17.6",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.10",
+    "vitest": "^4.1.5"
+  }
+}
