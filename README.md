@@ -12,6 +12,7 @@ A general-purpose CLI tool. Currently supports PDF generation, with more command
   - [Updating](#updating)
   - [Uninstalling](#uninstalling)
 - [Commands](#commands)
+  - [info](#info)
   - [update](#update)
   - [pdf convert](#pdf-convert)
 - [Environment Variables](#environment-variables)
@@ -105,6 +106,29 @@ rm -rf ~/.bitbard
 Then remove the `PATH` export line the installer added to your shell profile (`~/.zshrc`, `~/.bashrc`, etc.).
 
 ## Commands
+
+### info
+
+Print system information for bug reports.
+
+```sh
+bitbard info
+```
+
+Displays the bitbard version, OS, architecture, CPU, memory, Node.js, Git, and shell details.
+
+```
+bitbard info
+
+  bitbard:          1.0.0
+  OS:               macOS 15.4.1
+  Architecture:     arm64
+  CPUs:             Apple M4 Pro (14 cores)
+  Memory:           48.00 GB
+  Node:             24.11.1
+  Git:              2.48.0
+  Shell:            /bin/zsh (zsh 5.9 (arm64-apple-darwin25.0))
+```
 
 ### update
 
