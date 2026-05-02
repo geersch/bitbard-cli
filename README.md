@@ -12,6 +12,7 @@ A general-purpose CLI tool. Currently supports PDF generation, with more command
   - [Updating](#updating)
   - [Uninstalling](#uninstalling)
 - [Commands](#commands)
+  - [update](#update)
   - [pdf convert](#pdf-convert)
 - [Environment Variables](#environment-variables)
 - [Running Tests](#running-tests)
@@ -72,7 +73,13 @@ Then add `~/.local/bin` to your `PATH` as described above.
 
 ### Updating
 
-Re-run the install script:
+Use the built-in update command:
+
+```sh
+bitbard update
+```
+
+Or re-run the install script:
 
 ```sh
 curl -o- https://raw.githubusercontent.com/geersch/bitbard-cli/master/install.sh | bash
@@ -98,6 +105,16 @@ rm -rf ~/.bitbard
 Then remove the `PATH` export line the installer added to your shell profile (`~/.zshrc`, `~/.bashrc`, etc.).
 
 ## Commands
+
+### update
+
+Update bitbard CLI to the latest version.
+
+```sh
+bitbard update
+```
+
+Pulls the latest changes from GitHub, reinstalls dependencies, and rebuilds the binary in place. Requires the installation to have been set up via the install script or manual install (a git repository must exist at `~/.bitbard`).
 
 ### pdf convert
 

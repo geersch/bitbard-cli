@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { defineCommand, runMain } from "citty";
 import pdf from "./commands/pdf/index.js";
+import update from "./commands/update.js";
 
 const main = defineCommand({
   meta: {
@@ -10,6 +11,7 @@ const main = defineCommand({
   },
   subCommands: {
     pdf,
+    update,
   },
 });
 
