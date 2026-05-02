@@ -1,18 +1,18 @@
-import { defineConfig } from "vite";
+import { defineConfig } from 'vite';
 
 export default defineConfig({
   build: {
     lib: {
-      entry: "src/bitbard.ts",
-      fileName: "bitbard",
-      formats: ["es"],
+      entry: 'src/bitbard.ts',
+      fileName: 'bitbard',
+      formats: ['es'],
     },
-    outDir: "dist",
-    target: "node24",
+    outDir: 'dist',
+    target: 'node24',
     rolldownOptions: {
-      external: [/^node:/, "pdfkit"],
+      external: [/^node:/, 'pdfkit'],
       output: {
-        entryFileNames: "bitbard.js",
+        entryFileNames: 'bitbard.js',
       },
     },
   },

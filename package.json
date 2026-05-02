@@ -14,8 +14,7 @@
   "packageManager": "yarn@4.14.1",
   "scripts": {
     "build": "vite build",
-    "test": "vitest run",
-    "dev": "vitest"
+    "format": "oxfmt"
   },
   "dependencies": {
     "citty": "^0.2.2",
@@ -26,6 +25,7 @@
     "@types/marked": "^6.0.0",
     "@types/node": "^25.6.0",
     "@types/pdfkit": "^0.17.6",
+    "oxfmt": "^0.47.0",
     "typescript": "^6.0.3",
     "vite": "^8.0.10",
     "vitest": "^4.1.5"

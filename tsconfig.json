@@ -1,9 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2024",
-    "lib": [
-      "ES2024"
-    ],
+    "lib": ["ES2024"],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "strict": true,
@@ -12,19 +10,10 @@
     "rootDir": "src",
     "esModuleInterop": true,
     "paths": {
-      "#lib": [
-        "./src/index.ts"
-      ]
+      "#lib": ["./src/index.ts"]
     },
-    "types": [
-      "node",
-    ]
+    "types": ["node"]
   },
-  "include": [
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }

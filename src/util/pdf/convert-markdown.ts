@@ -1,11 +1,11 @@
-import PDFDocument from "pdfkit";
-import { lexer, type Token, type Tokens } from "marked";
+import PDFDocument from 'pdfkit';
+import { lexer, type Token, type Tokens } from 'marked';
 
-const FONT_NORMAL = "Helvetica";
-const FONT_BOLD = "Helvetica-Bold";
-const FONT_ITALIC = "Helvetica-Oblique";
-const FONT_BOLD_ITALIC = "Helvetica-BoldOblique";
-const FONT_MONO = "Courier";
+const FONT_NORMAL = 'Helvetica';
+const FONT_BOLD = 'Helvetica-Bold';
+const FONT_ITALIC = 'Helvetica-Oblique';
+const FONT_BOLD_ITALIC = 'Helvetica-BoldOblique';
+const FONT_MONO = 'Courier';
 
 const HEADING_SIZES: Record<number, number> = {
   1: 24,
@@ -35,7 +35,7 @@ type InlineRun = { text: string; style: InlineStyle; link?: string };
 function collectInlineRuns(tokens: Token[], style: InlineStyle, runs: InlineRun[]): void {
   for (const token of tokens) {
     switch (token.type) {
-      case "text": {
+      case 'text': {
         const t = token as Tokens.Text;
         if (t.tokens && t.tokens.length > 0) {
           collectInlineRuns(t.tokens, style, runs);
@@ -44,33 +44,32 @@ function collectInlineRuns(tokens: Token[], style: InlineStyle, runs: InlineRun[
         }
         break;
       }
-      case "strong": {
+      case 'strong': {
         const t = token as Tokens.Strong;
         collectInlineRuns(t.tokens ?? [], { ...style, bold: true }, runs);
         break;
       }
-      case "em": {
+      case 'em': {
         const t = token as Tokens.Em;
         collectInlineRuns(t.tokens ?? [], { ...style, italic: true }, runs);
         break;
       }
-      case "codespan": {
+      case 'codespan': {
         const t = token as Tokens.Codespan;
         runs.push({ text: t.text, style: { ...style, code: true } });
         break;
       }
-      case "link": {
+      case 'link': {
         const t = token as Tokens.Link;
         runs.push({ text: t.text || t.href, style, link: t.href });
         break;
       }
-      case "br": {
-        runs.push({ text: "\n", style });
+      case 'br': {
+        runs.push({ text: '\n', style });
         break;
       }
       default: {
-        const raw = (token as { text?: string; raw?: string }).text
-          ?? (token as { raw?: string }).raw ?? "";
+        const raw = (token as { text?: string; raw?: string }).text ?? (token as { raw?: string }).raw ?? '';
         if (raw) runs.push({ text: raw, style });
         break;
       }
@@ -97,7 +96,7 @@ function applyRunFont(doc: InstanceType<typeof PDFDocument>, style: InlineStyle)
 function renderRuns(
   doc: InstanceType<typeof PDFDocument>,
   runs: InlineRun[],
-  extraOptions: Record<string, unknown> = {}
+  extraOptions: Record<string, unknown> = {},
 ): void {
   if (runs.length === 0) return;
 
@@ -110,31 +109,31 @@ function renderRuns(
     if (run.link) {
       opts.underline = true;
       opts.link = run.link;
-      doc.fillColor("blue");
+      doc.fillColor('blue');
     }
     if (run.style.code) {
-      doc.fillColor("#333333");
+      doc.fillColor('#333333');
     }
 
     if (isLast) {
       // Close the chain with the last real run (not an empty string) so
       // pdfkit correctly advances y. Apply paragraph spacing here.
-      if (run.link) doc.fillColor("blue");
-      if (run.style.code) doc.fillColor("#333333");
+      if (run.link) doc.fillColor('blue');
+      if (run.style.code) doc.fillColor('#333333');
       doc.text(run.text, { continued: false, ...extraOptions });
     } else {
       doc.text(run.text, opts);
     }
 
     if (run.link || run.style.code) {
-      doc.fillColor("black");
+      doc.fillColor('black');
     }
   }
 }
 
 function renderToken(doc: InstanceType<typeof PDFDocument>, token: Token, listDepth = 0): void {
   switch (token.type) {
-    case "heading": {
+    case 'heading': {
       const t = token as Tokens.Heading;
       const size = HEADING_SIZES[t.depth] ?? BODY_SIZE;
       const runs: InlineRun[] = [];
@@ -145,7 +144,7 @@ function renderToken(doc: InstanceType<typeof PDFDocument>, token: Token, listDe
       break;
     }
 
-    case "paragraph": {
+    case 'paragraph': {
       const t = token as Tokens.Paragraph;
       const runs: InlineRun[] = [];
       collectInlineRuns(t.tokens ?? [], { bold: false, italic: false, code: false }, runs);
@@ -154,12 +153,12 @@ function renderToken(doc: InstanceType<typeof PDFDocument>, token: Token, listDe
       break;
     }
 
-    case "blockquote": {
+    case 'blockquote': {
       const t = token as Tokens.Blockquote;
       const startY = doc.y;
       const xIndent = doc.page.margins.left + 12;
       doc.save();
-      doc.font(FONT_ITALIC).fontSize(BODY_SIZE).fillColor("#555555");
+      doc.font(FONT_ITALIC).fontSize(BODY_SIZE).fillColor('#555555');
       doc.x = xIndent;
       for (const inner of t.tokens) {
         renderToken(doc, inner, listDepth);
@@ -170,55 +169,55 @@ function renderToken(doc: InstanceType<typeof PDFDocument>, token: Token, listDe
         .save()
         .moveTo(doc.page.margins.left + 3, startY)
         .lineTo(doc.page.margins.left + 3, endY)
-        .strokeColor("#aaaaaa")
+        .strokeColor('#aaaaaa')
         .lineWidth(3)
         .stroke()
         .restore();
-      doc.font(FONT_NORMAL).fontSize(BODY_SIZE).fillColor("black");
+      doc.font(FONT_NORMAL).fontSize(BODY_SIZE).fillColor('black');
       break;
     }
 
-    case "code": {
+    case 'code': {
       const t = token as Tokens.Code;
       doc
         .font(FONT_MONO)
         .fontSize(CODE_SIZE)
-        .fillColor("#333333")
+        .fillColor('#333333')
         .text(t.text, { lineGap: 2, paragraphGap: GAP_AFTER_CODE });
-      doc.font(FONT_NORMAL).fontSize(BODY_SIZE).fillColor("black");
+      doc.font(FONT_NORMAL).fontSize(BODY_SIZE).fillColor('black');
       break;
     }
 
-    case "list": {
+    case 'list': {
       const t = token as Tokens.List;
       t.items.forEach((item, idx) => {
         renderListItem(doc, item, listDepth, t.ordered, idx + (Number(t.start) || 1));
       });
       if (listDepth === 0) {
         doc.font(FONT_NORMAL).fontSize(BODY_SIZE);
-        doc.text(" ", { paragraphGap: GAP_AFTER_LIST });
+        doc.text(' ', { paragraphGap: GAP_AFTER_LIST });
       }
       break;
     }
 
-    case "hr": {
+    case 'hr': {
       const y = doc.y;
       doc
         .moveTo(doc.page.margins.left, y)
         .lineTo(doc.page.width - doc.page.margins.right, y)
-        .strokeColor("#cccccc")
+        .strokeColor('#cccccc')
         .lineWidth(1)
         .stroke();
-      doc.font(FONT_NORMAL).fontSize(BODY_SIZE).text(" ", { paragraphGap: GAP_AFTER_PARAGRAPH });
+      doc.font(FONT_NORMAL).fontSize(BODY_SIZE).text(' ', { paragraphGap: GAP_AFTER_PARAGRAPH });
       break;
     }
 
-    case "space": {
+    case 'space': {
       // Spacing is handled per-block via paragraphGap
       break;
     }
 
-    case "html": {
+    case 'html': {
       break;
     }
 
@@ -237,10 +236,10 @@ function renderListItem(
   item: Tokens.ListItem,
   depth: number,
   ordered: boolean,
-  index: number
+  index: number,
 ): void {
   const indent = doc.page.margins.left + LIST_INDENT * (depth + 1);
-  const bullet = ordered ? `${index}.` : "•";
+  const bullet = ordered ? `${index}.` : '•';
   const bulletWidth = 20;
   const textX = indent + bulletWidth;
   const textWidth = doc.page.width - doc.page.margins.right - textX;
@@ -252,17 +251,21 @@ function renderListItem(
 
   const tokens = item.tokens ?? [];
   for (const t of tokens) {
-    if (t.type === "text") {
+    if (t.type === 'text') {
       const textToken = t as Tokens.Text;
       const runs: InlineRun[] = [];
-      collectInlineRuns(textToken.tokens ?? [{ type: "text", text: textToken.text, raw: textToken.text }] as Token[], { bold: false, italic: false, code: false }, runs);
+      collectInlineRuns(
+        textToken.tokens ?? ([{ type: 'text', text: textToken.text, raw: textToken.text }] as Token[]),
+        { bold: false, italic: false, code: false },
+        runs,
+      );
       if (runs.length > 0) {
         doc.font(FONT_NORMAL).fontSize(BODY_SIZE);
         renderRuns(doc, runs, { width: textWidth });
       } else {
         doc.font(FONT_NORMAL).fontSize(BODY_SIZE).text(textToken.text, { width: textWidth });
       }
-    } else if (t.type === "list") {
+    } else if (t.type === 'list') {
       const nestedList = t as Tokens.List;
       nestedList.items.forEach((nestedItem, idx) => {
         renderListItem(doc, nestedItem, depth + 1, nestedList.ordered, idx + (Number(nestedList.start) || 1));
@@ -279,9 +282,9 @@ export function convertMarkdown(markdown: string): Promise<Buffer> {
   const doc = new PDFDocument({ margin: 50, autoFirstPage: true });
   const chunks: Buffer[] = [];
 
-  doc.on("data", (chunk: Buffer) => chunks.push(chunk));
-  doc.on("end", () => resolve(Buffer.concat(chunks)));
-  doc.on("error", reject);
+  doc.on('data', (chunk: Buffer) => chunks.push(chunk));
+  doc.on('end', () => resolve(Buffer.concat(chunks)));
+  doc.on('error', reject);
 
   const tokens = lexer(markdown);
   for (const token of tokens) {

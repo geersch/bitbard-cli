@@ -36,9 +36,9 @@ The script will:
 
 1. Check that `git` and `node` are available
 2. Clone the repository into `~/.bitbard`
-4. Install dependencies and build the project
-5. Symlink the binary to `~/.local/bin/bitbard`
-6. Add `~/.local/bin` to your `PATH` in your shell profile if not already present
+3. Install dependencies and build the project
+4. Symlink the binary to `~/.local/bin/bitbard`
+5. Add `~/.local/bin` to your `PATH` in your shell profile if not already present
 
 > **Note:** Running the install script again on an existing installation will pull the latest changes and rebuild.
 
@@ -124,12 +124,12 @@ Convert plain text or markdown to a PDF file.
 bitbard pdf convert <output.pdf> [options]
 ```
 
-| Argument | Description |
-|---|---|
-| `<output.pdf>` | Path to the output PDF file (required, must end in `.pdf`) |
-| `--text`, `-t` | Inline text to convert |
+| Argument           | Description                                                       |
+| ------------------ | ----------------------------------------------------------------- |
+| `<output.pdf>`     | Path to the output PDF file (required, must end in `.pdf`)        |
+| `--text`, `-t`     | Inline text to convert                                            |
 | `--markdown`, `-m` | Treat inline `--text` as markdown (ignored when `--file` is used) |
-| `--file`, `-f` | Path to a `.txt` or `.md` file to convert |
+| `--file`, `-f`     | Path to a `.txt` or `.md` file to convert                         |
 
 `--text` and `--file` are mutually exclusive. You must provide exactly one.
 
@@ -161,6 +161,6 @@ bitbard pdf convert output.pdf --file document.md
 
 ## Environment Variables
 
-| Variable | Description |
-|---|---|
+| Variable      | Description                                            |
+| ------------- | ------------------------------------------------------ |
 | `BITBARD_DIR` | Override the install directory (default: `~/.bitbard`) |
