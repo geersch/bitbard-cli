@@ -48,6 +48,8 @@ export default defineCommand({
     console.log('Building...');
     run(`${YARN} build`, INSTALL_DIR);
 
+    run(`chmod a+x ${join(INSTALL_DIR, 'dist/bitbard.js')}`, INSTALL_DIR);
+
     console.log('bitbard updated successfully.');
   },
 });
