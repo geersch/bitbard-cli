@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 import { defineCommand, runMain } from 'citty';
-import pdf from './commands/pdf/index.js';
+import info from './commands/info.js';
 import update from './commands/update.js';
+import pdf from './commands/pdf/index.js';
 
 const main = defineCommand({
   meta: {
@@ -10,8 +11,9 @@ const main = defineCommand({
     description: 'Bitbard CLI tool',
   },
   subCommands: {
-    pdf,
+    info,
     update,
+    pdf,
   },
 });
 
