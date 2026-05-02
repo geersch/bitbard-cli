@@ -9,6 +9,10 @@ function swiftPlugin(): Plugin {
   return {
     name: 'swift-flux-helper',
     closeBundle() {
+      // CoreGraphics is macOS-only; skip Swift compilation on Linux CI runners
+      if (process.platform !== 'darwin') {
+        return;
+      }
       mkdirSync('dist/bin', { recursive: true });
       execSync('swiftc src/commands/screen/swift/flux.swift -o dist/bin/screen-flux -O', { stdio: 'inherit' });
     },
