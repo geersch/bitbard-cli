@@ -18,6 +18,7 @@
     "lint": "oxlint --fix"
   },
   "dependencies": {
+    "chalk": "^5.6.2",
     "citty": "^0.2.2",
     "marked": "^18.0.3",
     "pdfkit": "^0.18.0"

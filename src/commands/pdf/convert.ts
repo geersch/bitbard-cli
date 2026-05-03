@@ -1,6 +1,6 @@
 import { defineCommand } from 'citty';
 import { readFile } from 'node:fs/promises';
-import { chalk } from '../../util/chalk.js';
+import chalk from 'chalk';
 import { spinner } from '../../util/spinner.js';
 import { savePdf } from '../../util/pdf/save-pdf.js';
 import { saveMarkdownPdf } from '../../util/pdf/save-markdown-pdf.js';

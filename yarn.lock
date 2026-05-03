@@ -769,6 +769,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"chalk@npm:^5.6.2":
+  version: 5.6.2
+  resolution: "chalk@npm:5.6.2"
+  checksum: 10c0/99a4b0f0e7991796b1e7e3f52dceb9137cae2a9dfc8fc0784a550dc4c558e15ab32ed70b14b21b52beb2679b4892b41a0aa44249bcb996f01e125d58477c6976
+  languageName: node
+  linkType: hard
+
 "chownr@npm:^3.0.0":
   version: 3.0.0
   resolution: "chownr@npm:3.0.0"
@@ -1554,6 +1561,7 @@ __metadata:
     "@types/node": "npm:^25.6.0"
     "@types/pdfkit": "npm:^0.17.6"
     "@vitest/coverage-v8": "npm:^4.1.5"
+    chalk: "npm:^5.6.2"
     citty: "npm:^0.2.2"
     marked: "npm:^18.0.3"
     oxfmt: "npm:^0.47.0"

@@ -4,7 +4,7 @@ import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { chalk } from '../../util/chalk.js';
+import chalk from 'chalk';
 import { isMacOS } from '../../util/platform.js';
 
 const STATE_DIR = join(homedir(), '.config', 'bitbard');

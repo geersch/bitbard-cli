@@ -3,7 +3,7 @@ import { exec } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
-import { chalk } from '../util/chalk.js';
+import chalk from 'chalk';
 import { spinner } from '../util/spinner.js';
 
 const INSTALL_DIR = process.env.BITBARD_DIR ?? join(homedir(), '.bitbard');

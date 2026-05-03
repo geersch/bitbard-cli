@@ -1,4 +1,4 @@
-import { chalk } from './chalk.js';
+import chalk from 'chalk';
 
 const FRAMES = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
 
