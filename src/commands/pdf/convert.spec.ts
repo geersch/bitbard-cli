@@ -77,4 +77,22 @@ describe('pdf convert command', () => {
     );
     expect(errorSpy).toHaveBeenCalledWith('Error: output file must have a .pdf extension.');
   });
+
+  it('exits with error and prints message when savePdf throws', async () => {
+    vi.mocked(savePdf).mockRejectedValueOnce(new Error('disk full'));
+    await expect(runCommand(convertCmd, { rawArgs: ['--text', 'Hello world', 'output.pdf'] })).rejects.toThrow(
+      'process.exit called',
+    );
+    expect(errorSpy).toHaveBeenCalledWith('disk full');
+    expect(exitSpy).toHaveBeenCalledWith(1);
+  });
+
+  it('exits with error and prints message when saveMarkdownPdf throws', async () => {
+    vi.mocked(saveMarkdownPdf).mockRejectedValueOnce(new Error('write error'));
+    await expect(runCommand(convertCmd, { rawArgs: ['--file', 'input.md', 'output.pdf'] })).rejects.toThrow(
+      'process.exit called',
+    );
+    expect(errorSpy).toHaveBeenCalledWith('write error');
+    expect(exitSpy).toHaveBeenCalledWith(1);
+  });
 });

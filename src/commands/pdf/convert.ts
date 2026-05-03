@@ -78,7 +78,7 @@ export default defineCommand({
       stop(`PDF saved to ${chalk.bold(output)}`);
     } catch (err) {
       stop('Failed to generate PDF', false);
-      console.error(err instanceof Error ? err.message : String(err));
+      console.error((err as Error).message);
       process.exit(1);
     }
   },
