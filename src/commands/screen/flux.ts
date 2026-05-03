@@ -11,7 +11,7 @@ const STATE_DIR = join(homedir(), '.config', 'bitbard');
 const STATE_FILE = join(STATE_DIR, 'flux.json');
 
 // The binary lives next to the built bitbard.js in dist/
-const BINARY = join(dirname(fileURLToPath(import.meta.url)), 'bin/screen-flux');
+const BINARY = join(dirname(fileURLToPath(import.meta.url)), 'bin/flux');
 
 interface State {
   enabled: boolean;

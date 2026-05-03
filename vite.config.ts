@@ -9,12 +9,14 @@ function swiftPlugin(): Plugin {
   return {
     name: 'swift-flux-helper',
     closeBundle() {
-      // CoreGraphics is macOS-only; skip Swift compilation on Linux CI runners
+      // CoreGraphics / AppKit are macOS-only; skip Swift compilation on Linux CI runners
       if (process.platform !== 'darwin') {
         return;
       }
       mkdirSync('dist/bin', { recursive: true });
-      execSync('swiftc src/commands/screen/swift/flux.swift -o dist/bin/screen-flux -O', { stdio: 'inherit' });
+      const script =
+        'for f in src/swift/*.swift; do name=$(basename "$f" .swift); swiftc "$f" -o "dist/bin/$name" -O; done';
+      execSync(script, { stdio: 'inherit' });
     },
   };
 }
