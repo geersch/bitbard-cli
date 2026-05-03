@@ -1,12 +1,16 @@
 {
-  "name": "text-to-pdf",
+  "name": "bitbard-cli",
   "version": "1.0.0",
-  "description": "text to pdf converter",
+  "description": "Bitbard CLI tool",
   "bin": {
     "bitbard": "./dist/bitbard.js"
   },
   "keywords": [
-    "cli"
+    "cli",
+    "pdf",
+    "markdown",
+    "screen",
+    "flux"
   ],
   "author": "Christophe Geers",
   "license": "UNLICENSED",
