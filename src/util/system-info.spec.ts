@@ -114,4 +114,18 @@ describe('getSystemInfo', () => {
     const info = await getSystemInfo('1.0.0');
     expect(info.shell).toBe('/bin/zsh');
   });
+
+  it('reports unknown cpu model when os.cpus() returns an empty array', async () => {
+    const os = await import('node:os');
+    vi.mocked(os.default.cpus).mockReturnValueOnce([]);
+    mockExec({
+      'sw_vers -productName': 'macOS',
+      'sw_vers -productVersion': '15.4.1',
+      'git --version': 'git version 2.49.0',
+      '/bin/zsh --version': 'zsh 5.9 (x86_64-apple-darwin)',
+    });
+
+    const info = await getSystemInfo('1.0.0');
+    expect(info.cpus).toBe('unknown (0 cores)');
+  });
 });
