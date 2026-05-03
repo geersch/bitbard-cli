@@ -1,13 +1,10 @@
 import { chalk } from './chalk.js';
 
-const isTTY = process.stdout.isTTY;
-
 const FRAMES = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
 
 export function spinner(label: string): (done: string, success?: boolean) => void {
-  if (!isTTY) {
-    process.stdout.write(`${label}...\n`);
-    return (done: string) => process.stdout.write(`${done}\n`);
+  if (!process.stdout.isTTY) {
+    return () => {};
   }
 
   let i = 0;
