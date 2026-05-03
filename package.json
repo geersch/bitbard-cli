@@ -1,6 +1,5 @@
 {
   "name": "bitbard-cli",
-  "version": "1.0.0",
   "description": "Bitbard CLI tool",
   "bin": {
     "bitbard": "./dist/bitbard.js"

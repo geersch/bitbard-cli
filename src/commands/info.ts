@@ -7,7 +7,7 @@ export default defineCommand({
     description: 'Print system information for bug reports',
   },
   async run() {
-    const info = await getSystemInfo(__APP_VERSION__);
+    const info = await getSystemInfo(`v${__APP_VERSION__}`);
 
     console.log('\nbitbard info\n');
     console.log(`  bitbard:          ${info.bitbard}`);

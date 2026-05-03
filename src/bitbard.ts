@@ -8,8 +8,8 @@ import screen from './commands/screen/index.js';
 const main = defineCommand({
   meta: {
     name: 'bitbard',
-    version: '1.0.0',
-    description: 'Bitbard CLI tool',
+    version: __APP_VERSION__,
+    description: 'Bitbard CLI',
   },
   subCommands: {
     pdf,
