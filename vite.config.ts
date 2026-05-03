@@ -24,6 +24,9 @@ export default defineConfig({
     __APP_VERSION__: JSON.stringify(pkg.version),
   },
   plugins: [swiftPlugin()],
+  resolve: {
+    conditions: ['node', 'import', 'default'],
+  },
   build: {
     lib: {
       entry: 'src/bitbard.ts',
