@@ -1,5 +1,6 @@
 import { exec } from 'node:child_process';
 import os from 'node:os';
+import { isMacOS } from './platform.js';
 
 export interface SystemInfo {
   bitbard: string;
@@ -22,15 +23,16 @@ function formatMemory(bytes: number): string {
   return `${(bytes / 1024 ** 3).toFixed(2)} GB`;
 }
 
+async function getMacOSVersion(): Promise<string> {
+  const [name, version] = await Promise.all([tryExec('sw_vers -productName'), tryExec('sw_vers -productVersion')]);
+  return `${name} ${version}`;
+}
+
 async function getOsVersion(): Promise<string> {
-  const type = os.type();
-  if (type === 'Darwin') {
-    const [name, version] = await Promise.all([tryExec('sw_vers -productName'), tryExec('sw_vers -productVersion')]);
-    if (name !== undefined && version !== undefined) {
-      return `${name} ${version}`;
-    }
+  if (isMacOS()) {
+    return getMacOSVersion();
   }
-  return `${type} ${os.release()}`;
+  return `${os.type()} ${os.release()}`;
 }
 
 async function getShell(): Promise<string | undefined> {

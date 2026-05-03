@@ -8,6 +8,7 @@ vi.mock('node:child_process', () => ({
 
 vi.mock('node:os', () => ({
   default: {
+    platform: vi.fn(() => 'darwin'),
     type: vi.fn(() => 'Darwin'),
     release: vi.fn(() => '24.4.0'),
     arch: vi.fn(() => 'arm64'),
@@ -69,6 +70,7 @@ describe('getSystemInfo', () => {
 
   it('falls back to kernel version on non-macOS platforms', async () => {
     const os = await import('node:os');
+    vi.mocked(os.default.platform).mockReturnValueOnce('linux');
     vi.mocked(os.default.type).mockReturnValueOnce('Linux');
     vi.mocked(os.default.release).mockReturnValueOnce('6.8.0-51-generic');
     mockExec({});
