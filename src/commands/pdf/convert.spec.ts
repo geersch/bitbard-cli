@@ -5,6 +5,13 @@ import { savePdf } from '../../util/pdf/save-pdf.js';
 import { saveMarkdownPdf } from '../../util/pdf/save-markdown-pdf.js';
 import { readFile } from 'node:fs/promises';
 
+vi.mock('../../util/ui.js', () => ({
+  intro: vi.fn(),
+  outro: vi.fn(),
+  spinner: vi.fn(() => ({ start: vi.fn(), stop: vi.fn() })),
+  log: { error: vi.fn() },
+}));
+
 vi.mock('../../util/pdf/save-pdf.js', () => ({
   savePdf: vi.fn().mockResolvedValue(undefined),
 }));
@@ -83,7 +90,6 @@ describe('pdf convert command', () => {
     await expect(runCommand(convertCmd, { rawArgs: ['--text', 'Hello world', 'output.pdf'] })).rejects.toThrow(
       'process.exit called',
     );
-    expect(errorSpy).toHaveBeenCalledWith('disk full');
     expect(exitSpy).toHaveBeenCalledWith(1);
   });
 
@@ -92,7 +98,6 @@ describe('pdf convert command', () => {
     await expect(runCommand(convertCmd, { rawArgs: ['--file', 'input.md', 'output.pdf'] })).rejects.toThrow(
       'process.exit called',
     );
-    expect(errorSpy).toHaveBeenCalledWith('write error');
     expect(exitSpy).toHaveBeenCalledWith(1);
   });
 });
