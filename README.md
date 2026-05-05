@@ -1,6 +1,6 @@
 # bitbard
 
-A general-purpose CLI tool. Currently supports PDF generation, with more commands coming.
+A general-purpose CLI tool. Currently supports PDF generation, screen controls, and more.
 
 ## Table of Contents
 
@@ -17,6 +17,7 @@ A general-purpose CLI tool. Currently supports PDF generation, with more command
   - [pdf](#pdf)
     - [convert](#convert)
   - [screen](#screen)
+    - [darkmode](#darkmode)
     - [flux](#flux)
 - [Environment Variables](#environment-variables)
 - [Running Tests](#running-tests)
@@ -193,6 +194,25 @@ bitbard pdf convert output.pdf --file document.md
 ### screen
 
 Screen-related commands.
+
+#### darkmode
+
+Switch macOS appearance between Light and Dark mode.
+
+```sh
+bitbard screen darkmode
+```
+
+Presents an interactive prompt to select the desired appearance mode:
+
+```
+◆  Select appearance mode
+│  ○ Light
+│  ● Dark
+└
+```
+
+> **Note:** macOS only.
 
 #### flux
 

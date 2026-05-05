@@ -1,5 +1,6 @@
 import { defineCommand } from 'citty';
 import flux from './flux.js';
+import darkmode from './darkmode.js';
 
 export default defineCommand({
   meta: {
@@ -7,6 +8,7 @@ export default defineCommand({
     description: 'Screen-related commands',
   },
   subCommands: {
+    darkmode,
     flux,
   },
 });
