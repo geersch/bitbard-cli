@@ -19,6 +19,7 @@ A general-purpose CLI tool. Currently supports PDF generation, screen controls, 
   - [screen](#screen)
     - [darkmode](#darkmode)
     - [flux](#flux)
+    - [truetone](#truetone)
 - [Environment Variables](#environment-variables)
 - [Running Tests](#running-tests)
 
@@ -225,6 +226,14 @@ bitbard screen flux
 Each invocation toggles the tint on or off. State is persisted in `~/.config/bitbard/flux.json`.
 
 > **Note:** macOS only. Requires permission to control display gamma (no additional entitlements needed beyond running as the current user).
+
+#### truetone
+
+Toggle the macOS True Tone setting.
+
+```sh
+bitbard screen truetone
+```
 
 ## Environment Variables
 
