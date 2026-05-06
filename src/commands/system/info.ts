@@ -1,5 +1,5 @@
 import { defineCommand } from 'citty';
-import { getSystemInfo } from '../util/system-info.js';
+import { getSystemInfo } from '../../util/system-info.js';
 
 export default defineCommand({
   meta: {

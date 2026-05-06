@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { runCommand } from 'citty';
 import infoCmd from './info.js';
 
-vi.mock('../util/system-info.js', () => ({
+vi.mock('../../util/system-info.js', () => ({
   getSystemInfo: vi.fn(() => ({
     bitbard: '1.0.0',
     os: 'Darwin 24.4.0',
@@ -41,7 +41,7 @@ describe('info command', () => {
   });
 
   it('shows "not found" for git when git is not installed', async () => {
-    const { getSystemInfo } = await import('../util/system-info.js');
+    const { getSystemInfo } = await import('../../util/system-info.js');
     vi.mocked(getSystemInfo).mockReturnValueOnce({
       bitbard: '1.0.0',
       os: 'Darwin 24.4.0',

@@ -12,7 +12,8 @@ A general-purpose CLI tool. Currently supports PDF generation, display controls,
   - [Updating](#updating)
   - [Uninstalling](#uninstalling)
 - [Commands](#commands)
-  - [info](#info)
+  - [system](#system)
+    - [info](#info)
   - [update](#update)
   - [pdf](#pdf)
     - [convert](#convert)
@@ -112,18 +113,22 @@ Then remove the `PATH` export line the installer added to your shell profile (`~
 
 ## Commands
 
-### info
+### system
+
+System-related commands.
+
+#### info
 
 Print system information for bug reports.
 
 ```sh
-bitbard info
+bitbard system info
 ```
 
 Displays the bitbard version, OS, architecture, CPU, memory, Node.js, Git, and shell details.
 
 ```
-bitbard info
+bitbard system info
 
   bitbard:          1.0.0
   OS:               macOS 15.4.1
