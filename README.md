@@ -1,6 +1,6 @@
 # bitbard
 
-A general-purpose CLI tool. Currently supports PDF generation, screen controls, and more.
+A general-purpose CLI tool. Currently supports PDF generation, display controls, and more.
 
 ## Table of Contents
 
@@ -16,7 +16,7 @@ A general-purpose CLI tool. Currently supports PDF generation, screen controls, 
   - [update](#update)
   - [pdf](#pdf)
     - [convert](#convert)
-  - [screen](#screen)
+  - [display](#display)
     - [darkmode](#darkmode)
     - [flux](#flux)
     - [truetone](#truetone)
@@ -192,16 +192,16 @@ bitbard pdf convert output.pdf --file document.txt
 bitbard pdf convert output.pdf --file document.md
 ```
 
-### screen
+### display
 
-Screen-related commands.
+Display-related commands.
 
 #### darkmode
 
 Switch macOS appearance between Light and Dark mode.
 
 ```sh
-bitbard screen darkmode
+bitbard display darkmode
 ```
 
 Presents an interactive prompt to select the desired appearance mode:
@@ -220,7 +220,7 @@ Presents an interactive prompt to select the desired appearance mode:
 Toggle a warm screen tint similar to [f.lux](https://justgetflux.com/). Reduces blue light by applying a warm gamma table to all active displays.
 
 ```sh
-bitbard screen flux
+bitbard display flux
 ```
 
 Each invocation toggles the tint on or off. State is persisted in `~/.config/bitbard/flux.json`.
@@ -232,7 +232,7 @@ Each invocation toggles the tint on or off. State is persisted in `~/.config/bit
 Toggle the macOS True Tone setting.
 
 ```sh
-bitbard screen truetone
+bitbard display truetone
 ```
 
 ## Environment Variables

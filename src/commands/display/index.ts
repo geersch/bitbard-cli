@@ -5,8 +5,8 @@ import truetone from './truetone.js';
 
 export default defineCommand({
   meta: {
-    name: 'screen',
-    description: 'Screen-related commands',
+    name: 'display',
+    description: 'Display-related commands',
   },
   subCommands: {
     darkmode,
