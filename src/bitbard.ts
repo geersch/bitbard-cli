@@ -5,6 +5,7 @@ import pdf from './commands/pdf/index.js';
 import display from './commands/display/index.js';
 import spotify from './commands/spotify/index.js';
 import system from './commands/system/index.js';
+import vpn from './commands/vpn/index.js';
 
 const main = defineCommand({
   meta: {
@@ -17,6 +18,7 @@ const main = defineCommand({
     display,
     spotify,
     system,
+    vpn,
     update,
   },
 });

@@ -1,6 +1,6 @@
 # bitbard
 
-A general-purpose CLI tool. Currently supports PDF generation, display controls, and more.
+A general-purpose CLI tool. Currently supports PDF generation, display controls, VPN management, and more.
 
 ## Table of Contents
 
@@ -21,6 +21,11 @@ A general-purpose CLI tool. Currently supports PDF generation, display controls,
     - [darkmode](#darkmode)
     - [flux](#flux)
     - [truetone](#truetone)
+  - [vpn](#vpn)
+    - [connect](#connect)
+    - [disconnect](#disconnect)
+    - [list](#list)
+    - [status](#status)
 - [Environment Variables](#environment-variables)
 - [Running Tests](#running-tests)
 
@@ -238,6 +243,48 @@ Toggle the macOS True Tone setting.
 
 ```sh
 bitbard display truetone
+```
+
+### vpn
+
+VPN management commands.
+
+> **Note:** macOS only.
+
+#### connect
+
+Connect to a VPN configuration.
+
+```sh
+bitbard vpn connect
+```
+
+If only one VPN configuration exists, it connects automatically. If multiple configurations are present, an interactive prompt is shown to select one.
+
+#### disconnect
+
+Disconnect the active VPN connection.
+
+```sh
+bitbard vpn disconnect
+```
+
+Finds the currently connected (or connecting) VPN and stops it. Logs a message if no active connection is found.
+
+#### status
+
+Show the current VPN connection status.
+
+```sh
+bitbard vpn status
+```
+
+#### list
+
+List all VPN configurations and their current status.
+
+```sh
+bitbard vpn list
 ```
 
 ## Environment Variables
