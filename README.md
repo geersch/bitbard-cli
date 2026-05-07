@@ -1,22 +1,18 @@
 # bitbard
 
-A general-purpose CLI tool. Currently supports PDF generation, display controls, VPN management, and more.
+A general-purpose CLI tool. Currently supports display controls, VPN management, and more.
 
 ## Table of Contents
 
-- [Requirements](#requirements)
 - [Installing and Upgrading](#installing-and-upgrading)
   - [Install Script](#install-script)
   - [Verify Installation](#verify-installation)
-  - [Manual Install](#manual-install)
   - [Upgrading](#upgrading)
   - [Uninstalling](#uninstalling)
 - [Commands](#commands)
   - [system](#system)
     - [info](#info)
   - [upgrade](#upgrade)
-  - [pdf](#pdf)
-    - [convert](#convert)
   - [display](#display)
     - [darkmode](#darkmode)
     - [flux](#flux)
@@ -26,13 +22,6 @@ A general-purpose CLI tool. Currently supports PDF generation, display controls,
     - [disconnect](#disconnect)
     - [list](#list)
     - [status](#status)
-- [Environment Variables](#environment-variables)
-- [Running Tests](#running-tests)
-
-## Requirements
-
-- **git**
-- **Node.js**
 
 ## Installing and Upgrading
 
@@ -41,18 +30,8 @@ A general-purpose CLI tool. Currently supports PDF generation, display controls,
 To install or update bitbard, run the install script:
 
 ```sh
-curl -o- https://raw.githubusercontent.com/geersch/bitbard-cli/master/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/geersch/bitbard-cli/master/install.sh | bash
 ```
-
-The script will:
-
-1. Check that `git` and `node` are available
-2. Clone the repository into `~/.bitbard`
-3. Install dependencies and build the project
-4. Symlink the binary to `~/.local/bin/bitbard`
-5. Add `~/.local/bin` to your `PATH` in your shell profile if not already present
-
-> **Note:** Running the install script again on an existing installation will pull the latest changes and rebuild.
 
 ### Verify Installation
 
@@ -70,19 +49,6 @@ export PATH="$HOME/.local/bin:$PATH"
 
 Add that line to your `~/.zshrc` or `~/.bashrc` to make it permanent.
 
-### Manual Install
-
-```sh
-git clone https://github.com/geersch/bitbard-cli.git ~/.bitbard
-cd ~/.bitbard
-node .yarn/releases/yarn-4.14.1.cjs install
-node .yarn/releases/yarn-4.14.1.cjs build
-chmod +x dist/bitbard.js
-ln -sf ~/.bitbard/dist/bitbard.js ~/.local/bin/bitbard
-```
-
-Then add `~/.local/bin` to your `PATH` as described above.
-
 ### Upgrading
 
 Use the built-in upgrade command:
@@ -94,27 +60,18 @@ bitbard upgrade
 Or re-run the install script:
 
 ```sh
-curl -o- https://raw.githubusercontent.com/geersch/bitbard-cli/master/install.sh | bash
-```
-
-Or manually:
-
-```sh
-cd ~/.bitbard
-git fetch --depth=1 origin HEAD
-git reset --hard FETCH_HEAD
-node .yarn/releases/yarn-4.14.1.cjs install
-node .yarn/releases/yarn-4.14.1.cjs build
+curl -fsSL https://raw.githubusercontent.com/geersch/bitbard-cli/master/install.sh | bash
 ```
 
 ### Uninstalling
 
 ```sh
 rm ~/.local/bin/bitbard
-rm -rf ~/.bitbard
+rm -rf ~/.local/share/bitbard
+rm -rf ~/.config/bitbard
 ```
 
-Then remove the `PATH` export line the installer added to your shell profile (`~/.zshrc`, `~/.bashrc`, etc.).
+Then remove the `# Added by bitbard installer` block from your shell profile (`~/.zshrc`, `~/.bashrc`, etc.).
 
 ## Commands
 
@@ -154,53 +111,6 @@ bitbard upgrade
 ```
 
 Pulls the latest changes from GitHub, reinstalls dependencies, and rebuilds the binary in place. Requires the installation to have been set up via the install script or manual install (a git repository must exist at `~/.bitbard`).
-
-### pdf
-
-PDF-related commands.
-
-#### convert
-
-Convert plain text or markdown to a PDF file.
-
-```
-bitbard pdf convert <output.pdf> [options]
-```
-
-| Argument           | Description                                                       |
-| ------------------ | ----------------------------------------------------------------- |
-| `<output.pdf>`     | Path to the output PDF file (required, must end in `.pdf`)        |
-| `--text`, `-t`     | Inline text to convert                                            |
-| `--markdown`, `-m` | Treat inline `--text` as markdown (ignored when `--file` is used) |
-| `--file`, `-f`     | Path to a `.txt` or `.md` file to convert                         |
-
-`--text` and `--file` are mutually exclusive. You must provide exactly one.
-
-When using `--file`, the format is detected automatically from the file extension (`.txt` for plain text, `.md` for markdown).
-
-**Convert inline text:**
-
-```sh
-bitbard pdf convert output.pdf --text "Hello, world!"
-```
-
-**Convert inline markdown:**
-
-```sh
-bitbard pdf convert output.pdf --text "# Title\n**bold** and _italic_" --markdown
-```
-
-**Convert a text file:**
-
-```sh
-bitbard pdf convert output.pdf --file document.txt
-```
-
-**Convert a markdown file:**
-
-```sh
-bitbard pdf convert output.pdf --file document.md
-```
 
 ### display
 
@@ -286,9 +196,3 @@ List all VPN configurations and their current status.
 ```sh
 bitbard vpn list
 ```
-
-## Environment Variables
-
-| Variable      | Description                                            |
-| ------------- | ------------------------------------------------------ |
-| `BITBARD_DIR` | Override the install directory (default: `~/.bitbard`) |
