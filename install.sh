@@ -31,6 +31,15 @@ check_prerequisites() {
   if ! bitbard_has node; then
     bitbard_error "Node.js is required but was not found. Install it from https://nodejs.org and try again."
   fi
+
+  if ! bitbard_has bun; then
+    bitbard_echo "=> bun not found, installing..."
+    curl -fsSL https://bun.sh/install | bash
+    export PATH="${HOME}/.bun/bin:${PATH}"
+    if ! bitbard_has bun; then
+      bitbard_error "Failed to install bun. Install it manually from https://bun.sh and try again."
+    fi
+  fi
 }
 
 # ---------------------------------------------------------------------------
@@ -56,17 +65,15 @@ install_or_update_repo() {
 # ---------------------------------------------------------------------------
 
 build() {
-  local YARN="node ${BITBARD_INSTALL_DIR}/.yarn/releases/yarn-4.14.1.cjs"
-
   bitbard_echo "=> Installing dependencies..."
-  ( cd "${BITBARD_INSTALL_DIR}" && ${YARN} install ) || \
+  ( cd "${BITBARD_INSTALL_DIR}" && bun install ) || \
     bitbard_error "Failed to install dependencies."
 
   bitbard_echo "=> Building bitbard..."
-  ( cd "${BITBARD_INSTALL_DIR}" && ${YARN} build ) || \
+  ( cd "${BITBARD_INSTALL_DIR}" && bun run build ) || \
     bitbard_error "Build failed."
 
-  chmod +x "${BITBARD_INSTALL_DIR}/dist/bitbard.js"
+  chmod +x "${BITBARD_INSTALL_DIR}/packages/cli/dist/bitbard.js"
 }
 
 # ---------------------------------------------------------------------------
@@ -75,7 +82,7 @@ build() {
 
 link_binary() {
   mkdir -p "${BITBARD_BIN_DIR}"
-  ln -sf "${BITBARD_INSTALL_DIR}/dist/bitbard.js" "${BITBARD_BIN_DIR}/bitbard"
+  ln -sf "${BITBARD_INSTALL_DIR}/packages/cli/dist/bitbard.js" "${BITBARD_BIN_DIR}/bitbard"
   bitbard_echo "=> Linked bitbard binary to '${BITBARD_BIN_DIR}/bitbard'."
 }
 

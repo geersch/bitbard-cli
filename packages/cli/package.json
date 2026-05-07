@@ -1,0 +1,27 @@
+{
+  "name": "@bitbard/cli",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "bitbard": "./dist/bitbard.js"
+  },
+  "scripts": {
+    "build": "vite build",
+    "check-types": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@bitbard/core": "workspace:*",
+    "@clack/prompts": "1.3.0",
+    "chalk": "^5.6.2",
+    "citty": "^0.2.2"
+  },
+  "devDependencies": {
+    "@bitbard/typescript-config": "workspace:*",
+    "@types/node": "^22.0.0",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.10",
+    "vitest": "^4.1.5",
+    "@vitest/coverage-v8": "^4.1.5"
+  }
+}
