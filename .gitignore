@@ -1,3 +1,5 @@
+.DS_Store
+
 # Logs
 logs
 *.log
@@ -7,23 +9,19 @@ yarn-error.log*
 lerna-debug.log*
 
 # Yarn
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
+.yarn/
 
 # Dependency directories
 node_modules/
 
-# Build output
 dist
 
 # AI
 .opencode/
 
-.DS_Store
+.worktrees/
+
+.turbo
 
 *.pdf
 
