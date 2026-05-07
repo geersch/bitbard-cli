@@ -5,16 +5,16 @@ A general-purpose CLI tool. Currently supports PDF generation, display controls,
 ## Table of Contents
 
 - [Requirements](#requirements)
-- [Installing and Updating](#installing-and-updating)
+- [Installing and Upgrading](#installing-and-upgrading)
   - [Install Script](#install-script)
   - [Verify Installation](#verify-installation)
   - [Manual Install](#manual-install)
-  - [Updating](#updating)
+  - [Upgrading](#upgrading)
   - [Uninstalling](#uninstalling)
 - [Commands](#commands)
   - [system](#system)
     - [info](#info)
-  - [update](#update)
+  - [upgrade](#upgrade)
   - [pdf](#pdf)
     - [convert](#convert)
   - [display](#display)
@@ -34,7 +34,7 @@ A general-purpose CLI tool. Currently supports PDF generation, display controls,
 - **git**
 - **Node.js**
 
-## Installing and Updating
+## Installing and Upgrading
 
 ### Install Script
 
@@ -83,12 +83,12 @@ ln -sf ~/.bitbard/dist/bitbard.js ~/.local/bin/bitbard
 
 Then add `~/.local/bin` to your `PATH` as described above.
 
-### Updating
+### Upgrading
 
-Use the built-in update command:
+Use the built-in upgrade command:
 
 ```sh
-bitbard update
+bitbard upgrade
 ```
 
 Or re-run the install script:
@@ -145,12 +145,12 @@ bitbard system info
   Shell:            /bin/zsh (zsh 5.9 (arm64-apple-darwin25.0))
 ```
 
-### update
+### upgrade
 
-Update bitbard CLI to the latest version.
+Upgrade bitbard CLI to the latest version.
 
 ```sh
-bitbard update
+bitbard upgrade
 ```
 
 Pulls the latest changes from GitHub, reinstalls dependencies, and rebuilds the binary in place. Requires the installation to have been set up via the install script or manual install (a git repository must exist at `~/.bitbard`).

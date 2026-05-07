@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { defineCommand, runMain } from 'citty';
-import update from './commands/update.js';
+import upgrade from './commands/upgrade.js';
 import pdf from './commands/pdf/index.js';
 import display from './commands/display/index.js';
 import spotify from './commands/spotify/index.js';
@@ -19,7 +19,7 @@ const main = defineCommand({
     spotify,
     system,
     vpn,
-    update,
+    upgrade,
   },
 });
 

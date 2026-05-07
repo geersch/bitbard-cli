@@ -10,8 +10,8 @@ const YARN = `node ${join(INSTALL_DIR, '.yarn/releases/yarn-4.14.1.cjs')}`;
 
 export default defineCommand({
   meta: {
-    name: 'update',
-    description: 'Update bitbard CLI to the latest version',
+    name: 'upgrade',
+    description: 'Upgrade bitbard CLI to the latest version',
   },
   async run() {
     if (!existsSync(join(INSTALL_DIR, '.git'))) {
@@ -22,7 +22,7 @@ export default defineCommand({
       process.exit(1);
     }
 
-    intro('Update');
+    intro('Upgrade');
 
     const s = spinner();
     s.start('Checking for updates…');
