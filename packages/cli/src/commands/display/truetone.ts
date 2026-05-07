@@ -3,8 +3,6 @@ import { execFileSync } from 'node:child_process';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 import chalk from 'chalk';
-import { isMacOS } from '@bitbard/core/platform.js';
-
 const binDir = process.env.BITBARD_BIN_DIR ?? join(homedir(), '.local', 'share', 'bitbard', 'bin');
 const BINARY = join(binDir, 'truetone');
 
@@ -14,11 +12,6 @@ export default defineCommand({
     description: 'Toggle macOS True Tone.',
   },
   run() {
-    if (!isMacOS()) {
-      console.log(chalk.bold(chalk.red('The truetone command is only supported on macOS.')));
-      return;
-    }
-
     try {
       const result = execFileSync(BINARY, ['toggle'], { encoding: 'utf8' }).trim();
       if (result === 'enabled') {

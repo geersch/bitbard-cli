@@ -8,12 +8,14 @@ import next from './next.js';
 import now from './now.js';
 import volumeUp from './volume-up.js';
 import volumeDown from './volume-down.js';
+import { macosPlugin } from '../../plugins/macos.js';
 
 export default defineCommand({
   meta: {
     name: 'spotify',
     description: 'Control the Spotify application',
   },
+  plugins: [macosPlugin],
   subCommands: {
     launch,
     play,

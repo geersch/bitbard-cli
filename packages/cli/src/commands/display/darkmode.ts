@@ -1,7 +1,6 @@
 import { defineCommand } from 'citty';
 import { select, isCancel } from '@clack/prompts';
 import chalk from 'chalk';
-import { isMacOS } from '@bitbard/core/platform.js';
 import { runAppleScript } from '@bitbard/core/applescript.js';
 
 type DarkMode = 'light' | 'dark';
@@ -12,11 +11,6 @@ export default defineCommand({
     description: 'Switch macOS appearance between Light and Dark',
   },
   async run() {
-    if (!isMacOS()) {
-      console.log(chalk.bold(chalk.red('The darkmode command is only supported on macOS.')));
-      return;
-    }
-
     const choice = await select<DarkMode>({
       message: 'Select appearance mode',
       options: [

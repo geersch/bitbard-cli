@@ -13,12 +13,7 @@ vi.mock('@bitbard/core/spotify.js', () => ({
   volumeDown: vi.fn().mockResolvedValue(undefined),
 }));
 
-vi.mock('@bitbard/core/platform.js', () => ({
-  isMacOS: vi.fn().mockReturnValue(true),
-}));
-
 import * as spotifyUtil from '@bitbard/core/spotify.js';
-import { isMacOS } from '@bitbard/core/platform.js';
 
 import launchCmd from './launch.js';
 import playCmd from './play.js';
@@ -34,14 +29,6 @@ describe('spotify launch', () => {
   it('calls launch()', async () => {
     await runCommand(launchCmd, { rawArgs: [] });
     expect(spotifyUtil.launch).toHaveBeenCalledOnce();
-  });
-
-  it('does not call launch() on non-macOS', async () => {
-    vi.mocked(isMacOS).mockReturnValueOnce(false);
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    await runCommand(launchCmd, { rawArgs: [] });
-    expect(spotifyUtil.launch).not.toHaveBeenCalled();
-    errorSpy.mockRestore();
   });
 });
 

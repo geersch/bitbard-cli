@@ -4,8 +4,6 @@ import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 import chalk from 'chalk';
-import { isMacOS } from '@bitbard/core/platform.js';
-
 const STATE_DIR = join(homedir(), '.config', 'bitbard');
 const STATE_FILE = join(STATE_DIR, 'flux.json');
 
@@ -63,11 +61,6 @@ export default defineCommand({
     description: 'Toggle warm screen tint (reduces blue light)',
   },
   run() {
-    if (!isMacOS()) {
-      console.log(chalk.bold(chalk.red('The flux command is only supported on macOS.')));
-      return;
-    }
-
     const state = readState();
 
     if (state.enabled) {

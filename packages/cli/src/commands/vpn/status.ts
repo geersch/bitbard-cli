@@ -1,6 +1,5 @@
 import { defineCommand } from 'citty';
 import chalk from 'chalk';
-import { isMacOS } from '@bitbard/core/platform.js';
 import { listVpnConfigs } from '@bitbard/core/vpn.js';
 
 export default defineCommand({
@@ -9,11 +8,6 @@ export default defineCommand({
     description: 'Show the current VPN connection status',
   },
   async run() {
-    if (!isMacOS()) {
-      console.log(chalk.bold(chalk.red('The vpn command is only supported on macOS.')));
-      return;
-    }
-
     try {
       const configs = await listVpnConfigs();
       const active = configs.find((c) => c.status === 'Connected' || c.status === 'Connecting');

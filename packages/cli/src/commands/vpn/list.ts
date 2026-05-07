@@ -1,6 +1,5 @@
 import { defineCommand } from 'citty';
 import chalk from 'chalk';
-import { isMacOS } from '@bitbard/core/platform.js';
 import { listVpnConfigs, type VpnStatus } from '@bitbard/core/vpn.js';
 
 const statusColor: Record<VpnStatus, (s: string) => string> = {
@@ -17,11 +16,6 @@ export default defineCommand({
     description: 'List all VPN configurations and their status',
   },
   async run() {
-    if (!isMacOS()) {
-      console.log(chalk.bold(chalk.red('The vpn command is only supported on macOS.')));
-      return;
-    }
-
     try {
       const configs = await listVpnConfigs();
 

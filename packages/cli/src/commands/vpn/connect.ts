@@ -1,6 +1,5 @@
 import { defineCommand } from 'citty';
 import { select, isCancel, intro, outro, spinner, log } from '@clack/prompts';
-import { isMacOS } from '@bitbard/core/platform.js';
 import { listVpnConfigs, startVpn, getVpnStatus } from '@bitbard/core/vpn.js';
 
 const POLL_INTERVAL_MS = 500;
@@ -23,11 +22,6 @@ export default defineCommand({
     description: 'Connect to a VPN configuration',
   },
   async run() {
-    if (!isMacOS()) {
-      log.error('The vpn command is only supported on macOS.');
-      return;
-    }
-
     try {
       const configs = await listVpnConfigs();
 
