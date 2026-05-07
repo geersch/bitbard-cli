@@ -2,8 +2,7 @@ import { defineCommand } from 'citty';
 import { execSync, spawn } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { homedir } from 'node:os';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import chalk from 'chalk';
 import { isMacOS } from '@bitbard/core/platform.js';
 
@@ -11,7 +10,7 @@ const STATE_DIR = join(homedir(), '.config', 'bitbard');
 const STATE_FILE = join(STATE_DIR, 'flux.json');
 
 // The binary lives in dist/bin/ next to the built bitbard.js
-const binDir = process.env.BITBARD_BIN_DIR ?? join(dirname(fileURLToPath(import.meta.url)), 'bin');
+const binDir = process.env.BITBARD_BIN_DIR ?? __BIN_DIR__;
 const BINARY = join(binDir, 'flux');
 
 interface State {

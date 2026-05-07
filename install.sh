@@ -1,174 +1,265 @@
 #!/usr/bin/env bash
 
-{ # this ensures the entire script is downloaded before execution
+set -euo pipefail
 
-BITBARD_GITHUB_REPO="geersch/bitbard-cli"
-BITBARD_INSTALL_DIR="${BITBARD_DIR:-${HOME}/.bitbard}"
-BITBARD_BIN_DIR="${HOME}/.local/bin"
+{ # ensure the entire script is downloaded before execution
 
-bitbard_echo() {
+APP="bitbard"
+GITHUB_REPO="geersch/bitbard-cli"
+INSTALL_BIN_DIR="${HOME}/.local/bin"
+INSTALL_DATA_DIR="${HOME}/.local/share/bitbard/bin"
+
+# ---------------------------------------------------------------------------
+# Colours
+# ---------------------------------------------------------------------------
+
+RED='\033[0;31m'
+ORANGE='\033[38;5;214m'
+MUTED='\033[0;2m'
+NC='\033[0m'
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+bb_echo() {
   command printf '%s\n' "$*" 2>/dev/null
 }
 
-bitbard_has() {
-  type "$1" > /dev/null 2>&1
-}
-
-bitbard_error() {
-  bitbard_echo >&2 "Error: $*"
+bb_error() {
+  printf "${RED}Error: %s${NC}\n" "$*" >&2
   exit 1
 }
 
-# ---------------------------------------------------------------------------
-# Prerequisite checks
-# ---------------------------------------------------------------------------
+bb_warn() {
+  printf "${ORANGE}Warning: %s${NC}\n" "$*" >&2
+}
 
-check_prerequisites() {
-  if ! bitbard_has git; then
-    bitbard_error "git is required but was not found."
-  fi
+usage() {
+  cat <<EOF
+bitbard installer
 
-  if ! bitbard_has node; then
-    bitbard_error "Node.js is required but was not found. Install it from https://nodejs.org and try again."
-  fi
+Usage: install.sh [options]
 
-  if ! bitbard_has bun; then
-    bitbard_echo "=> bun not found, installing..."
-    curl -fsSL https://bun.sh/install | bash
-    export PATH="${HOME}/.bun/bin:${PATH}"
-    if ! bitbard_has bun; then
-      bitbard_error "Failed to install bun. Install it manually from https://bun.sh and try again."
-    fi
-  fi
+Options:
+  -h, --help                 Show this help message
+  -v, --version <version>    Install a specific version (e.g. 26.0507.1430-a3f2c1)
+  --no-modify-path           Skip patching shell config files
+
+Examples:
+  curl -fsSL https://raw.githubusercontent.com/${GITHUB_REPO}/master/install.sh | bash
+  curl -fsSL https://raw.githubusercontent.com/${GITHUB_REPO}/master/install.sh | bash -s -- --version 26.0507.1430-a3f2c1
+EOF
 }
 
 # ---------------------------------------------------------------------------
-# Clone or update
+# Argument parsing
 # ---------------------------------------------------------------------------
 
-install_or_update_repo() {
-  if [ -d "${BITBARD_INSTALL_DIR}/.git" ]; then
-    bitbard_echo "=> bitbard is already installed in ${BITBARD_INSTALL_DIR}, updating..."
-    command git -C "${BITBARD_INSTALL_DIR}" fetch --depth=1 origin HEAD && \
-      command git -C "${BITBARD_INSTALL_DIR}" reset --hard FETCH_HEAD || \
-      bitbard_error "Failed to update the repository in ${BITBARD_INSTALL_DIR}."
-  else
-    bitbard_echo "=> Cloning bitbard into '${BITBARD_INSTALL_DIR}'..."
-    mkdir -p "${BITBARD_INSTALL_DIR}" || bitbard_error "Failed to create directory '${BITBARD_INSTALL_DIR}'."
-    command git clone --depth=1 "https://github.com/${BITBARD_GITHUB_REPO}.git" "${BITBARD_INSTALL_DIR}" || \
-      bitbard_error "Failed to clone repository 'https://github.com/${BITBARD_GITHUB_REPO}.git'."
-  fi
-}
+requested_version="${VERSION:-}"
+no_modify_path=false
 
-# ---------------------------------------------------------------------------
-# Build
-# ---------------------------------------------------------------------------
-
-build() {
-  bitbard_echo "=> Installing dependencies..."
-  ( cd "${BITBARD_INSTALL_DIR}" && bun install ) || \
-    bitbard_error "Failed to install dependencies."
-
-  bitbard_echo "=> Building bitbard..."
-  ( cd "${BITBARD_INSTALL_DIR}" && bun run build ) || \
-    bitbard_error "Build failed."
-
-  chmod +x "${BITBARD_INSTALL_DIR}/packages/cli/dist/bitbard.js"
-}
-
-# ---------------------------------------------------------------------------
-# Link binary
-# ---------------------------------------------------------------------------
-
-link_binary() {
-  mkdir -p "${BITBARD_BIN_DIR}"
-  ln -sf "${BITBARD_INSTALL_DIR}/packages/cli/dist/bitbard.js" "${BITBARD_BIN_DIR}/bitbard"
-  bitbard_echo "=> Linked bitbard binary to '${BITBARD_BIN_DIR}/bitbard'."
-}
-
-# ---------------------------------------------------------------------------
-# Shell profile patching
-# ---------------------------------------------------------------------------
-
-bitbard_try_profile() {
-  if [ -z "${1-}" ] || [ ! -f "${1}" ]; then
-    return 1
-  fi
-  bitbard_echo "${1}"
-}
-
-bitbard_detect_profile() {
-  local DETECTED_PROFILE=''
-
-  if [ "${SHELL#*bash}" != "$SHELL" ]; then
-    if [ -f "${HOME}/.bashrc" ]; then
-      DETECTED_PROFILE="${HOME}/.bashrc"
-    elif [ -f "${HOME}/.bash_profile" ]; then
-      DETECTED_PROFILE="${HOME}/.bash_profile"
-    fi
-  elif [ "${SHELL#*zsh}" != "$SHELL" ]; then
-    if [ -f "${ZDOTDIR:-${HOME}}/.zshrc" ]; then
-      DETECTED_PROFILE="${ZDOTDIR:-${HOME}}/.zshrc"
-    elif [ -f "${ZDOTDIR:-${HOME}}/.zprofile" ]; then
-      DETECTED_PROFILE="${ZDOTDIR:-${HOME}}/.zprofile"
-    fi
-  fi
-
-  if [ -z "$DETECTED_PROFILE" ]; then
-    for EACH_PROFILE in ".profile" ".bashrc" ".bash_profile" ".zprofile" ".zshrc"; do
-      if DETECTED_PROFILE="$(bitbard_try_profile "${ZDOTDIR:-${HOME}}/${EACH_PROFILE}")"; then
-        break
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    -v|--version)
+      if [[ -n "${2:-}" ]]; then
+        requested_version="$2"
+        shift 2
+      else
+        bb_error "--version requires a version argument"
       fi
-    done
+      ;;
+    --no-modify-path)
+      no_modify_path=true
+      shift
+      ;;
+    *)
+      bb_warn "Unknown option '$1'"
+      shift
+      ;;
+  esac
+done
+
+# ---------------------------------------------------------------------------
+# Platform detection
+# ---------------------------------------------------------------------------
+
+raw_os=$(uname -s)
+case "$raw_os" in
+  Darwin*) os="darwin" ;;
+  *)       bb_error "Unsupported OS: ${raw_os}" ;;
+esac
+
+arch=$(uname -m)
+case "$arch" in
+  x86_64)  arch="x64"   ;;
+  aarch64) arch="arm64" ;;
+  arm64)   arch="arm64" ;;
+  *)       bb_error "Unsupported architecture: ${arch}" ;;
+esac
+
+combo="${os}-${arch}"
+case "$combo" in
+  darwin-arm64) ;;
+  *) bb_error "Unsupported platform: ${combo}. Only darwin-arm64 is supported in this release." ;;
+esac
+
+asset_name="${APP}-${combo}.tar.gz"
+
+bb_echo "Detected platform: ${combo}"
+
+# ---------------------------------------------------------------------------
+# Version resolution
+# ---------------------------------------------------------------------------
+
+if [[ -n "$requested_version" ]]; then
+  resolved_version="${requested_version#v}"
+else
+  bb_echo "=> Fetching latest release..."
+  api_url="https://api.github.com/repos/${GITHUB_REPO}/releases/latest"
+  api_http_status=$(curl -s -o /dev/null -w "%{http_code}" "$api_url")
+
+  if [[ "$api_http_status" == "404" ]]; then
+    bb_error "No releases found for ${GITHUB_REPO}. Check https://github.com/${GITHUB_REPO}/releases"
+  elif [[ "$api_http_status" != "200" ]]; then
+    bb_error "Failed to fetch latest release (HTTP ${api_http_status}). Check https://github.com/${GITHUB_REPO}/releases"
   fi
 
-  bitbard_echo "${DETECTED_PROFILE}"
-}
+  resolved_version=$(curl -sf "$api_url" | sed -n 's/.*"tag_name": *"v\([^"]*\)".*/\1/p')
+  if [[ -z "$resolved_version" ]]; then
+    bb_error "Could not parse release version from API response. Check https://github.com/${GITHUB_REPO}/releases"
+  fi
+fi
 
-patch_shell_profile() {
-  local PATH_LINE
-  PATH_LINE="\\nexport PATH=\"\$HOME/.local/bin:\$PATH\" # Added by bitbard installer\\n"
+download_url="https://github.com/${GITHUB_REPO}/releases/download/v${resolved_version}/${asset_name}"
 
-  local PROFILE
-  PROFILE="$(bitbard_detect_profile)"
+# ---------------------------------------------------------------------------
+# Idempotency check
+# ---------------------------------------------------------------------------
 
-  if [ -z "${PROFILE}" ]; then
-    bitbard_echo "=> Could not detect a shell profile. Add the following line manually:"
-    bitbard_echo "     export PATH=\"\$HOME/.local/bin:\$PATH\""
+if command -v bitbard >/dev/null 2>&1; then
+  installed_version=$(bitbard --version 2>/dev/null || true)
+  if [[ "$installed_version" == "$resolved_version" ]]; then
+    printf "${MUTED}bitbard %s is already installed.${NC}\n" "$resolved_version"
+    exit 0
+  fi
+  printf "${MUTED}Updating bitbard from %s to %s...${NC}\n" "$installed_version" "$resolved_version"
+else
+  printf "${MUTED}Installing bitbard %s...${NC}\n" "$resolved_version"
+fi
+
+# ---------------------------------------------------------------------------
+# Download with progress
+# ---------------------------------------------------------------------------
+
+tmp_dir=$(mktemp -d)
+trap 'rm -rf "$tmp_dir"' EXIT
+
+archive="${tmp_dir}/${asset_name}"
+
+if [[ -t 1 ]]; then
+  curl -# -L -o "$archive" "$download_url"
+else
+  curl -sS -L -o "$archive" "$download_url"
+fi
+
+# ---------------------------------------------------------------------------
+# Extract and install
+# ---------------------------------------------------------------------------
+
+bb_echo "=> Extracting..."
+tar -xzf "$archive" -C "$tmp_dir"
+
+# Install main binary
+mkdir -p "$INSTALL_BIN_DIR"
+mv "${tmp_dir}/${APP}" "${INSTALL_BIN_DIR}/${APP}"
+chmod 755 "${INSTALL_BIN_DIR}/${APP}"
+bb_echo "=> Installed ${APP} to ${INSTALL_BIN_DIR}/${APP}"
+
+# Install Swift helpers (may not exist on all platforms / in all releases)
+if [[ -d "${tmp_dir}/bin" ]]; then
+  mkdir -p "$INSTALL_DATA_DIR"
+  cp -r "${tmp_dir}/bin/." "$INSTALL_DATA_DIR/"
+  chmod 755 "${INSTALL_DATA_DIR}"/*
+  bb_echo "=> Installed Swift helpers to ${INSTALL_DATA_DIR}"
+fi
+
+# ---------------------------------------------------------------------------
+# PATH patching
+# ---------------------------------------------------------------------------
+
+add_to_path() {
+  local config_file="$1"
+  local line="$2"
+
+  if grep -qF "$line" "$config_file" 2>/dev/null; then
+    bb_echo "=> ${INSTALL_BIN_DIR} already in PATH in ${config_file}"
     return
   fi
 
-  if command grep -qc '.local/bin' "${PROFILE}" 2>/dev/null; then
-    bitbard_echo "=> \$HOME/.local/bin is already on PATH in ${PROFILE}."
+  if [[ -w "$config_file" ]]; then
+    printf '\n# Added by bitbard installer\n%s\n' "$line" >> "$config_file"
+    bb_echo "=> Added ${INSTALL_BIN_DIR} to PATH in ${config_file}"
   else
-    bitbard_echo "=> Adding \$HOME/.local/bin to PATH in ${PROFILE}..."
-    command printf '%b' "${PATH_LINE}" >> "${PROFILE}"
+    bb_warn "Cannot write to ${config_file}. Add manually:"
+    bb_echo "   $line"
   fi
 }
 
+if [[ "$no_modify_path" != "true" ]]; then
+  current_shell=$(basename "${SHELL:-bash}")
+
+  case "$current_shell" in
+    fish)
+      config_file="${XDG_CONFIG_HOME:-${HOME}/.config}/fish/config.fish"
+      path_line="fish_add_path ${INSTALL_BIN_DIR}"
+      ;;
+    zsh)
+      config_file="${ZDOTDIR:-${HOME}}/.zshrc"
+      path_line="export PATH=\"${INSTALL_BIN_DIR}:\$PATH\""
+      ;;
+    bash)
+      if [[ -f "${HOME}/.bashrc" ]]; then
+        config_file="${HOME}/.bashrc"
+      else
+        config_file="${HOME}/.bash_profile"
+      fi
+      path_line="export PATH=\"${INSTALL_BIN_DIR}:\$PATH\""
+      ;;
+    *)
+      config_file="${HOME}/.profile"
+      path_line="export PATH=\"${INSTALL_BIN_DIR}:\$PATH\""
+      ;;
+  esac
+
+  if [[ -f "$config_file" ]]; then
+    if [[ ":${PATH}:" != *":${INSTALL_BIN_DIR}:"* ]]; then
+      add_to_path "$config_file" "$path_line"
+    else
+      bb_echo "=> ${INSTALL_BIN_DIR} is already on PATH"
+    fi
+  else
+    bb_warn "No shell config file found at ${config_file}. Add manually:"
+    bb_echo "   $path_line"
+  fi
+fi
+
 # ---------------------------------------------------------------------------
-# Main
+# Done
 # ---------------------------------------------------------------------------
 
-bitbard_do_install() {
-  bitbard_echo "=> Installing bitbard..."
-  bitbard_echo
+bb_echo
+bb_echo "=> bitbard ${resolved_version} installed successfully."
+if [[ ":${PATH}:" != *":${INSTALL_BIN_DIR}:"* ]]; then
+  bb_echo "=> Restart your shell or run:"
+  bb_echo
+  bb_echo "     export PATH=\"${INSTALL_BIN_DIR}:\$PATH\""
+  bb_echo
+fi
+bb_echo "=> Then run: bitbard --help"
 
-  check_prerequisites
-  install_or_update_repo
-  build
-  link_binary
-  patch_shell_profile
-
-  bitbard_echo
-  bitbard_echo "=> bitbard was installed successfully."
-  bitbard_echo "=> Run the following to start using it (or open a new terminal):"
-  bitbard_echo
-  bitbard_echo "     export PATH=\"\$HOME/.local/bin:\$PATH\""
-  bitbard_echo
-  bitbard_echo "=> Then run: bitbard --help"
-}
-
-bitbard_do_install
-
-} # this ensures the entire script is downloaded before execution
+} # end of download guard

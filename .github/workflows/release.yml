@@ -1,0 +1,81 @@
+name: Release
+
+on:
+  push:
+    branches: ['master']
+
+jobs:
+  release:
+    name: Build and Release
+    runs-on: macos-latest
+    timeout-minutes: 20
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Compute version
+        id: version
+        run: |
+          COMMIT_TS=$(git log -1 --pretty=%ct)
+          SHA=$(git rev-parse --short HEAD)
+          VERSION=$(date -u -r "$COMMIT_TS" "+%y.%m%d.%H%M")-$SHA
+          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Check if release already exists
+        id: check_release
+        run: |
+          if gh release view "v${{ steps.version.outputs.VERSION }}" &>/dev/null; then
+            echo "EXISTS=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "EXISTS=false" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        if: steps.check_release.outputs.EXISTS == 'false'
+        run: bun run build
+        env:
+          BITBARD_INSTALL_BIN_DIR: ${{ env.HOME }}/.local/share/bitbard/bin
+
+      - name: Compile standalone binary (darwin-arm64)
+        if: steps.check_release.outputs.EXISTS == 'false'
+        run: |
+          bun build --compile \
+            --target=bun-darwin-arm64 \
+            packages/cli/dist/bitbard.js \
+            --outfile bitbard
+
+      - name: Package release assets
+        if: steps.check_release.outputs.EXISTS == 'false'
+        run: |
+          mkdir -p staging/bin
+          cp bitbard staging/
+          cp packages/cli/dist/bin/* staging/bin/
+          tar -czf bitbard-darwin-arm64.tar.gz -C staging .
+
+      - name: Create GitHub Release
+        if: steps.check_release.outputs.EXISTS == 'false'
+        run: |
+          gh release create "v${{ steps.version.outputs.VERSION }}" \
+            bitbard-darwin-arm64.tar.gz \
+            --title "v${{ steps.version.outputs.VERSION }}" \
+            --notes "Automated release from master."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Release already exists — skipping
+        if: steps.check_release.outputs.EXISTS == 'true'
+        run: echo "Release v${{ steps.version.outputs.VERSION }} already exists. Skipping."

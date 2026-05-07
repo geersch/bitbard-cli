@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import { mkdirSync } from 'node:fs';
 import { execSync } from 'node:child_process';
-import { resolve, dirname } from 'node:path';
+import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Plugin } from 'vite';
 
@@ -19,7 +19,7 @@ function buildVersion(): string {
   const HH = pad(d.getHours());
   const mm = pad(d.getMinutes());
 
-  return `${yy}.${MM}${DD}.${HH}${mm}+${sha}`;
+  return `${yy}.${MM}${DD}.${HH}${mm}-${sha}`;
 }
 
 function swiftPlugin(): Plugin {
@@ -41,6 +41,7 @@ function swiftPlugin(): Plugin {
 export default defineConfig({
   define: {
     __APP_VERSION__: JSON.stringify(buildVersion()),
+    __BIN_DIR__: JSON.stringify(process.env.BITBARD_INSTALL_BIN_DIR ?? join(__dirname, 'dist', 'bin')),
   },
   plugins: [swiftPlugin()],
   resolve: {
