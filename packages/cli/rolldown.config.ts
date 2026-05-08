@@ -1,9 +1,9 @@
-import { defineConfig } from 'vite';
+import { defineConfig } from 'rolldown';
 import { mkdirSync } from 'node:fs';
 import { execSync } from 'node:child_process';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Plugin } from 'vite';
+import type { Plugin } from 'rolldown';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -39,26 +39,18 @@ function swiftPlugin(): Plugin {
 }
 
 export default defineConfig({
-  define: {
-    __APP_VERSION__: JSON.stringify(buildVersion()),
+  input: 'src/bitbard.ts',
+  platform: 'node',
+  external: [/^node:/],
+  transform: {
+    define: {
+      __APP_VERSION__: JSON.stringify(buildVersion()),
+    },
   },
   plugins: [swiftPlugin()],
-  resolve: {
-    conditions: ['node', 'import', 'default'],
-  },
-  build: {
-    lib: {
-      entry: 'src/bitbard.ts',
-      fileName: 'bitbard',
-      formats: ['es'],
-    },
-    outDir: 'dist',
-    target: 'node24',
-    rolldownOptions: {
-      external: [/^node:/, 'pdfkit'],
-      output: {
-        entryFileNames: 'bitbard.js',
-      },
-    },
+  output: {
+    format: 'esm',
+    dir: 'dist',
+    entryFileNames: 'bitbard.js',
   },
 });
