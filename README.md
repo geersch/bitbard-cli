@@ -12,6 +12,7 @@ A general-purpose CLI tool. Currently supports display controls, VPN management,
 - [Commands](#commands)
   - [system](#system)
     - [info](#info)
+    - [lock](#lock)
   - [upgrade](#upgrade)
   - [display](#display)
     - [darkmode](#darkmode)
@@ -101,6 +102,16 @@ bitbard system info
   Git:              2.48.0
   Shell:            /bin/zsh (zsh 5.9 (arm64-apple-darwin25.0))
 ```
+
+#### lock
+
+Lock the screen immediately.
+
+```sh
+bitbard system lock
+```
+
+> **Note:** macOS only. Uses Apple's private API. This may stop working in a future macOS release without warning.
 
 ### upgrade
 
