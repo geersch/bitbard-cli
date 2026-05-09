@@ -2,7 +2,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { runCommand } from 'citty';
 import lockCmd from './lock.js';
 
-vi.mock('@bitbard/core/lock.js', () => ({
+vi.mock('@bitbard/core/caffeinate.js', () => ({
   lockScreen: vi.fn(),
 }));
 
@@ -16,7 +16,7 @@ describe('lock command', () => {
   });
 
   it('calls lockScreen when run', async () => {
-    const { lockScreen } = await import('@bitbard/core/lock.js');
+    const { lockScreen } = await import('@bitbard/core/caffeinate.js');
 
     await runCommand(lockCmd, { rawArgs: [] });
 

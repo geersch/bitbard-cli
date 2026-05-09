@@ -13,6 +13,7 @@ A general-purpose CLI tool. Currently supports display controls, VPN management,
   - [system](#system)
     - [info](#info)
     - [lock](#lock)
+    - [screensaver](#screensaver)
   - [upgrade](#upgrade)
   - [display](#display)
     - [darkmode](#darkmode)
@@ -115,13 +116,21 @@ bitbard system info
 
 #### lock
 
-Lock the screen immediately.
+Lock the screen.
 
 ```sh
 bitbard system lock
 ```
 
 > **Note:** macOS only. Uses Apple's private API. This may stop working in a future macOS release without warning.
+
+#### screensaver
+
+Start the screensaver.
+
+```sh
+bitbard system screensaver
+```
 
 ### upgrade
 
@@ -153,8 +162,6 @@ Presents an interactive prompt to select the desired appearance mode:
 │  ● Dark
 └
 ```
-
-> **Note:** macOS only.
 
 #### flux
 

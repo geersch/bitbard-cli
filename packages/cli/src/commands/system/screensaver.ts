@@ -1,14 +1,14 @@
 import { defineCommand } from 'citty';
 import { macosPlugin } from '../../plugins/macos.js';
-import { lockScreen } from '@bitbard/core/caffeinate.js';
+import { startScreensaver } from '@bitbard/core/caffeinate.js';
 
 export default defineCommand({
   meta: {
-    name: 'lock',
-    description: 'Lock the screen',
+    name: 'screensaver',
+    description: 'Start the screensaver',
   },
   plugins: [macosPlugin],
   run() {
-    lockScreen();
+    startScreensaver();
   },
 });
