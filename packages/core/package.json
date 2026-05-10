@@ -10,14 +10,13 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "chalk": "^5.6.2"
+    "chalk": "catalog:"
   },
   "devDependencies": {
     "@bitbard/typescript-config": "workspace:*",
-    "@types/marked": "^6.0.0",
-    "@types/node": "^22.0.0",
-    "@vitest/coverage-v8": "^4.1.5",
-    "typescript": "^6.0.3",
-    "vitest": "^4.1.5"
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   }
 }
