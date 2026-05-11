@@ -1,60 +1,88 @@
 import AppKit
-import SwiftUI
 
-// MARK: - Style constants (mirrors alert.swift)
+// MARK: - Style constants
 
 private let pillRadius: CGFloat      = 27
-private let pillFillColor            = NSColor(white: 0, alpha: 0.75)
-private let pillStrokeColor          = NSColor(white: 1, alpha: 1)
-private let pillStrokeWidth: CGFloat = 2
+private let pillFillAlpha: CGFloat   = 0.75
+private let pillPaddingH: CGFloat    = 27
+private let pillPaddingV: CGFloat    = 13
 private let pillTextSize: CGFloat    = 27
 private let pillFadeIn               = 0.15
 private let pillFadeOut              = 0.15
 
-// MARK: - Alert view
+// MARK: - Pill view
+//
+// Pure AppKit, no SwiftUI.
+//
+// NSHostingView and NSHostingController both register SwiftUI attribute-graph
+// objects in the Objective-C autorelease pool. When a second alert is shown
+// before the first window closes, the pool accumulates stale back-pointers into
+// the first view's already-deallocated SwiftUI graph. When NSApp.run() drains
+// the pool between run-loop cycles, objc_release dereferences a dangling
+// pointer → EXC_BAD_ACCESS / SIGSEGV. Using plain AppKit drawing avoids the
+// autorelease pool entirely and is simpler for a static pill label.
 
-private struct AlertView: View {
-    let message: String
+private class PillView: NSView {
+    private let label: NSTextField
 
-    var body: some View {
-        Text(message)
-            .font(.system(size: pillTextSize))
-            .foregroundColor(.white)
-            .padding(.horizontal, pillTextSize)
-            .padding(.vertical, pillTextSize / 2)
-            .background {
-                RoundedRectangle(cornerRadius: pillRadius, style: .continuous)
-                    .fill(Color(nsColor: pillFillColor))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: pillRadius, style: .continuous)
-                            .stroke(Color(nsColor: pillStrokeColor), lineWidth: pillStrokeWidth)
-                    }
-            }
+    init(message: String) {
+        label = NSTextField(labelWithString: message)
+        label.font = NSFont.systemFont(ofSize: pillTextSize, weight: .regular)
+        label.textColor = .white
+        label.backgroundColor = .clear
+        label.isBezeled = false
+        label.isEditable = false
+        label.sizeToFit()
+
+        let size = NSSize(
+            width:  label.frame.width  + pillPaddingH * 2,
+            height: label.frame.height + pillPaddingV * 2
+        )
+        super.init(frame: NSRect(origin: .zero, size: size))
+        wantsLayer = true
+
+        label.frame = NSRect(
+            x: pillPaddingH,
+            y: pillPaddingV,
+            width: label.frame.width,
+            height: label.frame.height
+        )
+        addSubview(label)
+    }
+
+    required init?(coder: NSCoder) { fatalError() }
+
+    override func layout() {
+        super.layout()
+        guard let layer else { return }
+        layer.backgroundColor = NSColor(white: 0, alpha: pillFillAlpha).cgColor
+        layer.cornerRadius    = pillRadius
+        layer.borderColor     = NSColor.white.cgColor
+        layer.borderWidth     = 2
     }
 }
 
 // MARK: - Handler
 
 class AlertHandler {
-    // Keep strong references to active windows so they are not deallocated early.
+    // Strong references keep windows alive until their fade-out completes.
     private var activeWindows: [NSWindow] = []
 
+    @discardableResult
     func handle(message: String, duration: Double) -> DaemonResponse {
         guard let screen = NSScreen.main else {
             return .failure("alert: no main screen available")
         }
 
-        let hosting = NSHostingView(rootView: AlertView(message: message))
-        hosting.translatesAutoresizingMaskIntoConstraints = false
-        let idealSize = hosting.fittingSize
+        let pill = PillView(message: message)
+        let size = pill.frame.size
 
         let screenFrame = screen.frame
-        let x = screenFrame.midX - idealSize.width / 2
-        let y = screenFrame.midY - idealSize.height / 2 + screenFrame.height * 0.05
-        let windowRect = NSRect(x: x, y: y, width: idealSize.width, height: idealSize.height)
+        let x = screenFrame.midX - size.width  / 2
+        let y = screenFrame.midY - size.height / 2 + screenFrame.height * 0.05
 
         let win = NSWindow(
-            contentRect: windowRect,
+            contentRect: NSRect(x: x, y: y, width: size.width, height: size.height),
             styleMask: .borderless,
             backing: .buffered,
             defer: false
@@ -65,8 +93,7 @@ class AlertHandler {
         win.ignoresMouseEvents = true
         win.collectionBehavior = [.canJoinAllSpaces, .stationary, .fullScreenAuxiliary]
         win.hasShadow = false
-        hosting.frame = NSRect(origin: .zero, size: idealSize)
-        win.contentView = hosting
+        win.contentView = pill
 
         activeWindows.append(win)
         win.alphaValue = 0
@@ -84,7 +111,7 @@ class AlertHandler {
                 win.animator().alphaValue = 0
             }, completionHandler: { [weak self, weak win] in
                 guard let win else { return }
-                win.close()
+                win.orderOut(nil)
                 self?.activeWindows.removeAll { $0 === win }
             })
         }
