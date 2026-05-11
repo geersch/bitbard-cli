@@ -30,6 +30,10 @@ vi.mock('@bitbard/core/applescript.js', () => ({
   runAppleScript: vi.fn(),
 }));
 
+vi.mock('@bitbard/core/daemon.js', () => ({
+  sendCommand: vi.fn().mockResolvedValue({ ok: true, result: 'ok' }),
+}));
+
 // Mock all clack/prompts symbols used by leaf commands so nothing blocks.
 vi.mock('@clack/prompts', () => ({
   select: vi.fn().mockResolvedValue('light'),
