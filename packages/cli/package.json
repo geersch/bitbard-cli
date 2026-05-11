@@ -17,6 +17,7 @@
     "citty": "catalog:"
   },
   "devDependencies": {
+    "@bitbard/bitbardd": "workspace:*",
     "@bitbard/typescript-config": "workspace:*",
     "@types/node": "catalog:",
     "typescript": "catalog:",
