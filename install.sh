@@ -35,6 +35,48 @@ bb_warn() {
   printf "${ORANGE}Warning: %s${NC}\n" "$*" >&2
 }
 
+bb_install_launchagent() {
+  local plist_dir="${HOME}/Library/LaunchAgents"
+  local plist_path="${plist_dir}/com.bitbard.bitbardd.plist"
+  local daemon_bin="${INSTALL_DATA_DIR}/bitbardd"
+
+  mkdir -p "$plist_dir"
+
+  # Unload existing agent before replacing it
+  if [[ -f "$plist_path" ]]; then
+    launchctl unload "$plist_path" 2>/dev/null || true
+  fi
+
+  cat > "$plist_path" <<PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.bitbard.bitbardd</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>${daemon_bin}</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/tmp/bitbardd.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/bitbardd.log</string>
+</dict>
+</plist>
+PLIST
+
+  if launchctl load "$plist_path" 2>/dev/null; then
+    bb_echo "=> bitbardd LaunchAgent installed and started"
+  else
+    bb_warn "launchctl load failed. Start manually: launchctl load ${plist_path}"
+  fi
+}
+
 usage() {
   cat <<EOF
 bitbard installer
@@ -180,12 +222,13 @@ mv "${tmp_dir}/${APP}" "${INSTALL_BIN_DIR}/${APP}"
 chmod 755 "${INSTALL_BIN_DIR}/${APP}"
 bb_echo "=> Installed ${APP} to ${INSTALL_BIN_DIR}/${APP}"
 
-# Install Swift helpers (may not exist on all platforms / in all releases)
+# Install bitbardd daemon (may not exist on all platforms / in all releases)
 if [[ -d "${tmp_dir}/bin" ]]; then
   mkdir -p "$INSTALL_DATA_DIR"
   cp -r "${tmp_dir}/bin/." "$INSTALL_DATA_DIR/"
   chmod 755 "${INSTALL_DATA_DIR}"/*
-  bb_echo "=> Installed Swift helpers to ${INSTALL_DATA_DIR}"
+  bb_echo "=> Installed bitbardd to ${INSTALL_DATA_DIR}"
+  bb_install_launchagent
 fi
 
 # ---------------------------------------------------------------------------
