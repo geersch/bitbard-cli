@@ -1,20 +1,16 @@
 import { defineCommand } from 'citty';
-import { execFileSync } from 'node:child_process';
-import { homedir } from 'node:os';
-import { join } from 'node:path';
+import { sendCommand } from '@bitbard/core/daemon.js';
 import chalk from 'chalk';
-const binDir = process.env.BITBARD_BIN_DIR ?? join(homedir(), '.local', 'share', 'bitbard', 'bin');
-const BINARY = join(binDir, 'truetone');
 
 export default defineCommand({
   meta: {
     name: 'truetone',
     description: 'Toggle macOS True Tone.',
   },
-  run() {
+  async run() {
     try {
-      const result = execFileSync(BINARY, ['toggle'], { encoding: 'utf8' }).trim();
-      if (result === 'enabled') {
+      const res = await sendCommand({ command: 'truetone', action: 'toggle' });
+      if (res.result === 'enabled') {
         console.log(chalk.bold(chalk.green('True Tone enabled.')));
       } else {
         console.log(chalk.bold(chalk.yellow('True Tone disabled.')));
