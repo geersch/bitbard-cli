@@ -1,16 +1,10 @@
-import { spawn, execSync } from 'node:child_process';
-import { homedir } from 'node:os';
-import { join } from 'node:path';
-
-const binDir = process.env.BITBARD_BIN_DIR ?? join(homedir(), '.local', 'share', 'bitbard', 'bin');
-const LOCK_BINARY = join(binDir, 'lock');
+import { execSync } from 'node:child_process';
+import { sendCommand } from './daemon.js';
 
 export function lockScreen(): void {
-  const child = spawn(LOCK_BINARY, [], {
-    detached: true,
-    stdio: 'ignore',
+  sendCommand({ command: 'lock' }).catch((err: Error) => {
+    process.stderr.write(`bitbard: ${err.message}\n`);
   });
-  child.unref();
 }
 
 export function startScreensaver(): void {
