@@ -1,9 +1,7 @@
 import { defineConfig } from 'rolldown';
-import { mkdirSync } from 'node:fs';
 import { execSync } from 'node:child_process';
-import { resolve, dirname } from 'node:path';
+import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Plugin } from 'rolldown';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -22,22 +20,6 @@ function buildVersion(): string {
   return `${yy}.${MM}${DD}.${HH}${mm}-${sha}`;
 }
 
-function swiftPlugin(): Plugin {
-  return {
-    name: 'swift-compiler',
-    closeBundle() {
-      // CoreGraphics / AppKit are macOS-only; skip Swift compilation on Linux CI runners
-      if (process.platform !== 'darwin') {
-        return;
-      }
-      mkdirSync('dist/bin', { recursive: true });
-      const swiftDir = resolve(__dirname, '../core/src/swift');
-      const script = `for f in "${swiftDir}"/*.swift; do [ -f "$f" ] || continue; name=$(basename "$f" .swift); swiftc "$f" -o "dist/bin/$name" -O; done`;
-      execSync(script, { stdio: 'inherit' });
-    },
-  };
-}
-
 export default defineConfig({
   input: 'src/bitbard.ts',
   platform: 'node',
@@ -47,7 +29,6 @@ export default defineConfig({
       __APP_VERSION__: JSON.stringify(buildVersion()),
     },
   },
-  plugins: [swiftPlugin()],
   output: {
     format: 'esm',
     dir: 'dist',
