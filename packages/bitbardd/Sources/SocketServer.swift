@@ -121,7 +121,15 @@ class SocketServer {
         case .alert:
             let message = request.message ?? ""
             let duration = request.duration ?? 2.0
-            return DispatchQueue.main.sync { alert.handle(message: message, duration: duration) }
+            // Use async instead of sync: alert.handle() schedules AppKit animations that post
+            // completion handlers back onto the main run loop. If a second alert request arrives
+            // while the first alert's fade-out completion is pending, main.sync blocks the
+            // background socket thread waiting for main — while main is itself blocked trying to
+            // drain its run loop — causing a deadlock that manifests as a segfault. Since the
+            // alert is fire-and-forget (the client only cares that it was accepted, not that it
+            // has finished fading), we dispatch asynchronously and return success immediately.
+            DispatchQueue.main.async { [self] in _ = alert.handle(message: message, duration: duration) }
+            return .success("ok")
         }
     }
 }
