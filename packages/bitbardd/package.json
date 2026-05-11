@@ -2,6 +2,6 @@
   "name": "@bitbard/bitbardd",
   "private": true,
   "scripts": {
-    "build": "node build.mjs"
+    "build": "node build.js"
   }
 }
