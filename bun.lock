@@ -12,6 +12,9 @@
         "typescript": "catalog:",
       },
     },
+    "packages/bitbardd": {
+      "name": "@bitbard/bitbardd",
+    },
     "packages/cli": {
       "name": "@bitbard/cli",
       "bin": {
@@ -72,6 +75,8 @@
     "@babel/types": ["@babel/types@7.29.0", "", { "dependencies": { "@babel/helper-string-parser": "^7.27.1", "@babel/helper-validator-identifier": "^7.28.5" } }, "sha512-LwdZHpScM4Qz8Xw2iKSzS+cfglZzJGvofQICy7W7v4caru4EaAmyUuO6BGrbyQ2mYV11W0U8j5mBhd14dd3B0A=="],
 
     "@bcoe/v8-coverage": ["@bcoe/v8-coverage@1.0.2", "", {}, "sha512-6zABk/ECA/QYSCQ1NGiVwwbQerUCZ+TQbp64Q3AgmfNvurHH0j8TtXa1qbShXA6qqkpAj4V5W8pP6mLe1mcMqA=="],
+
+    "@bitbard/bitbardd": ["@bitbard/bitbardd@workspace:packages/bitbardd"],
 
     "@bitbard/cli": ["@bitbard/cli@workspace:packages/cli"],
 
