@@ -77,13 +77,22 @@ curl -fsSL https://raw.githubusercontent.com/geersch/bitbard-cli/master/install.
 
 ### Uninstalling
 
+Run these commands to fully remove bitbard:
+
 ```sh
+# Stop and remove the background daemon
+launchctl unload ~/Library/LaunchAgents/com.bitbard.bitbardd.plist
+rm ~/Library/LaunchAgents/com.bitbard.bitbardd.plist
+
+# Remove installed binaries
+rm ~/.local/share/bitbard/bin/bitbardd
 rm ~/.local/bin/bitbard
-rm -rf ~/.local/share/bitbard
+
+# Optional: remove config and state
 rm -rf ~/.config/bitbard
 ```
 
-Then remove the `# Added by bitbard installer` block from your shell profile (`~/.zshrc`, `~/.bashrc`, etc.).
+Then remove the `export PATH` line added by the installer from your shell config file (e.g. `~/.zshrc`).
 
 ## Commands
 
@@ -171,7 +180,7 @@ Toggle a warm screen tint similar to [f.lux](https://justgetflux.com/). Reduces 
 bitbard display flux
 ```
 
-Each invocation toggles the tint on or off. State is persisted in `~/.config/bitbard/flux.json`.
+Each invocation toggles the tint on or off. State is held in memory by the bitbardd daemon.
 
 > **Note:** macOS only. Requires permission to control display gamma (no additional entitlements needed beyond running as the current user).
 
