@@ -27,7 +27,6 @@
         "citty": "catalog:",
       },
       "devDependencies": {
-        "@bitbard/bitbardd": "workspace:*",
         "@bitbard/typescript-config": "workspace:*",
         "@types/node": "catalog:",
         "@vitest/coverage-v8": "catalog:",
