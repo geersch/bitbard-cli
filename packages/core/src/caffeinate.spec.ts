@@ -21,7 +21,7 @@ describe('caffeinate', () => {
 
       lockScreen();
 
-      expect(sendCommand).toHaveBeenCalledWith({ command: 'lock' });
+      expect(sendCommand).toHaveBeenCalledWith({ lock: {} });
     });
   });
 

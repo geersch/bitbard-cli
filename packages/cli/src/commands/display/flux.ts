@@ -11,8 +11,8 @@ export default defineCommand({
   plugins: [macosPlugin],
   async run() {
     try {
-      const res = await sendCommand({ command: 'flux', action: 'toggle' });
-      if (res.result === 'enabled') {
+      const res = await sendCommand({ flux: { action: 'toggle' } });
+      if ((res.result as string) === 'enabled') {
         console.log(chalk.bold(chalk.yellow('Screen tint enabled.')));
       } else {
         console.log(chalk.bold(chalk.green('Screen tint disabled.')));

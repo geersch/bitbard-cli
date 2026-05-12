@@ -4,15 +4,20 @@ import { join } from 'node:path';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
+type AudioDevicePayload =
+  | { action: 'defaultInput' | 'defaultOutput' }
+  | { action: 'mute' | 'unmute'; deviceId: number };
+
 export type DaemonRequest =
-  | { command: 'flux'; action: 'enable' | 'disable' | 'toggle' | 'status' }
-  | { command: 'truetone'; action: 'toggle' | 'status' }
-  | { command: 'lock' }
-  | { command: 'alert'; message: string; duration?: number };
+  | { flux: { action: 'enable' | 'disable' | 'toggle' | 'status' } }
+  | { truetone: { action: 'toggle' | 'status' } }
+  | { lock: Record<string, never> }
+  | { alert: { message: string; duration?: number } }
+  | { audiodevice: AudioDevicePayload };
 
 export interface DaemonResponse {
   ok: boolean;
-  result?: string;
+  result?: unknown;
   error?: string;
 }
 
