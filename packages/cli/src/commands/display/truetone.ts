@@ -9,8 +9,8 @@ export default defineCommand({
   },
   async run() {
     try {
-      const res = await sendCommand({ command: 'truetone', action: 'toggle' });
-      if (res.result === 'enabled') {
+      const res = await sendCommand({ truetone: { action: 'toggle' } });
+      if ((res.result as string) === 'enabled') {
         console.log(chalk.bold(chalk.green('True Tone enabled.')));
       } else {
         console.log(chalk.bold(chalk.yellow('True Tone disabled.')));

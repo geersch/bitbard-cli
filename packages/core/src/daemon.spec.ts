@@ -48,7 +48,7 @@ describe('sendCommand', () => {
     await startMockServer({ ok: true, result: 'disabled' });
     const { sendCommand } = await import('./daemon.js');
 
-    const res = await sendCommand({ command: 'flux', action: 'status' });
+    const res = await sendCommand({ flux: { action: 'status' } });
     expect(res).toEqual({ ok: true, result: 'disabled' });
   });
 
@@ -56,13 +56,13 @@ describe('sendCommand', () => {
     await startMockServer({ ok: false, error: 'flux: unknown action' });
     const { sendCommand } = await import('./daemon.js');
 
-    await expect(sendCommand({ command: 'flux', action: 'bad' as never })).rejects.toThrow('flux: unknown action');
+    await expect(sendCommand({ flux: { action: 'bad' as never } })).rejects.toThrow('flux: unknown action');
   });
 
   it('throws with helpful message when socket does not exist', async () => {
     const { sendCommand } = await import('./daemon.js');
 
-    await expect(sendCommand({ command: 'lock' })).rejects.toThrow('bitbardd is not running');
+    await expect(sendCommand({ lock: {} })).rejects.toThrow('bitbardd is not running');
   });
 
   it('sends the request as newline-terminated JSON', async () => {
@@ -82,8 +82,17 @@ describe('sendCommand', () => {
     });
 
     const { sendCommand } = await import('./daemon.js');
-    await sendCommand({ command: 'lock' });
+    await sendCommand({ lock: {} });
 
-    expect(received.trimEnd()).toBe(JSON.stringify({ command: 'lock' }));
+    expect(received.trimEnd()).toBe(JSON.stringify({ lock: {} }));
+  });
+
+  it('passes through an object result as-is', async () => {
+    const deviceData = { id: 67, name: 'MacBook Pro Microphone', isInput: true, isOutput: false };
+    await startMockServer({ ok: true, result: deviceData });
+    const { sendCommand } = await import('./daemon.js');
+
+    const res = await sendCommand({ audiodevice: { action: 'defaultInput' } });
+    expect(res).toEqual({ ok: true, result: deviceData });
   });
 });

@@ -28,7 +28,7 @@ describe('flux command', () => {
 
     await runCommand(fluxCmd, { rawArgs: [] });
 
-    expect(sendCommand).toHaveBeenCalledWith({ command: 'flux', action: 'toggle' });
+    expect(sendCommand).toHaveBeenCalledWith({ flux: { action: 'toggle' } });
   });
 
   it('prints enabled message when result is enabled', async () => {

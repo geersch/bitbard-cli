@@ -13,7 +13,7 @@ import { isMacOS } from './platform.js';
 export function showAlert(message: string, duration = 2): void {
   if (!isMacOS()) return;
 
-  sendCommand({ command: 'alert', message, duration }).catch((err: Error) => {
+  sendCommand({ alert: { message, duration } }).catch((err: Error) => {
     process.stderr.write(`bitbard: ${err.message}\n`);
   });
 }
