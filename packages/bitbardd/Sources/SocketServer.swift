@@ -5,6 +5,7 @@ class SocketServer {
     private let truetone = TrueToneHandler()
     private let lock = LockHandler()
     private let alert = AlertHandler()
+    private let audiodevice = AudioDeviceHandler()
 
     private let decoder = JSONDecoder()
     private let encoder = JSONEncoder()
@@ -111,25 +112,20 @@ class SocketServer {
     }
 
     private func dispatch(_ request: DaemonRequest) -> DaemonResponse {
-        switch request.command {
-        case .flux:
-            return DispatchQueue.main.sync { flux.handle(action: request.action) }
-        case .truetone:
-            return DispatchQueue.main.sync { truetone.handle(action: request.action) }
+        switch request {
+        case .flux(let r):
+            return DispatchQueue.main.sync { flux.handle(action: r.action) }
+        case .truetone(let r):
+            return DispatchQueue.main.sync { truetone.handle(action: r.action) }
         case .lock:
             return DispatchQueue.main.sync { lock.handle() }
-        case .alert:
-            let message = request.message ?? ""
-            let duration = request.duration ?? 2.0
-            // Use async instead of sync: alert.handle() schedules AppKit animations that post
-            // completion handlers back onto the main run loop. If a second alert request arrives
-            // while the first alert's fade-out completion is pending, main.sync blocks the
-            // background socket thread waiting for main — while main is itself blocked trying to
-            // drain its run loop — causing a deadlock that manifests as a segfault. Since the
-            // alert is fire-and-forget (the client only cares that it was accepted, not that it
-            // has finished fading), we dispatch asynchronously and return success immediately.
+        case .alert(let r):
+            let message = r.message
+            let duration = r.duration ?? 2.0
             DispatchQueue.main.async { [self] in _ = alert.handle(message: message, duration: duration) }
             return .success("ok")
+        case .audiodevice(let r):
+            return DispatchQueue.main.sync { audiodevice.handle(request: r) }
         }
     }
 }
