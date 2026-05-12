@@ -34,7 +34,11 @@ enum DaemonRequest {
     case audiodevice(AudioDeviceRequest)
 }
 
-extension DaemonRequest: Encodable {
+extension DaemonRequest: Codable {
+    private enum CodingKeys: String, CodingKey {
+        case flux, truetone, lock, alert, audiodevice
+    }
+
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         switch self {
@@ -46,12 +50,6 @@ extension DaemonRequest: Encodable {
         }
     }
 
-    private enum CodingKeys: String, CodingKey {
-        case flux, truetone, lock, alert, audiodevice
-    }
-}
-
-extension DaemonRequest: Decodable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         if let r = try? container.decode(FluxRequest.self, forKey: .flux) {
@@ -71,10 +69,6 @@ extension DaemonRequest: Decodable {
                 debugDescription: "DaemonRequest: unrecognised command"
             )
         }
-    }
-
-    private enum CodingKeys: String, CodingKey {
-        case flux, truetone, lock, alert, audiodevice
     }
 }
 
