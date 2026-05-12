@@ -1,6 +1,10 @@
 import AppKit
 import Foundation
 
+// Ignore SIGPIPE so a client closing the connection mid-send (e.g. the stale-socket
+// liveness probe in a second instance) doesn't kill the daemon.
+signal(SIGPIPE, SIG_IGN)
+
 let socketPath: String = {
     let dataDir = (ProcessInfo.processInfo.environment["BITBARD_DATA_DIR"]
         ?? (NSHomeDirectory() + "/.local/share/bitbard"))
