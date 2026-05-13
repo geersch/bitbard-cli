@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { defineCommand, runMain } from 'citty';
+import audio from './commands/audio/index.js';
 import display from './commands/display/index.js';
 import spotify from './commands/spotify/index.js';
 import system from './commands/system/index.js';
@@ -13,6 +14,7 @@ const main = defineCommand({
     description: 'Bitbard CLI',
   },
   subCommands: {
+    audio,
     display,
     spotify,
     system,

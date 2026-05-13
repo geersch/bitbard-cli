@@ -60,7 +60,7 @@ describe('AudioDevice', () => {
   }
 
   it('defaultInput() returns an AudioDevice with correct properties', async () => {
-    const deviceData = { id: 67, name: 'MacBook Pro Microphone', isInput: true, isOutput: false };
+    const deviceData = { id: 67, name: 'MacBook Pro Microphone', isInput: true, isOutput: false, isMuted: false };
     await startMockServer({ ok: true, result: deviceData });
     const { AudioDevice } = await import('./audiodevice.js');
 
@@ -70,10 +70,21 @@ describe('AudioDevice', () => {
     expect(device!.name).toBe('MacBook Pro Microphone');
     expect(device!.isInput).toBe(true);
     expect(device!.isOutput).toBe(false);
+    expect(device!.isMuted).toBe(false);
+  });
+
+  it('defaultInput() returns an AudioDevice with isMuted true when muted', async () => {
+    const deviceData = { id: 67, name: 'MacBook Pro Microphone', isInput: true, isOutput: false, isMuted: true };
+    await startMockServer({ ok: true, result: deviceData });
+    const { AudioDevice } = await import('./audiodevice.js');
+
+    const device = await AudioDevice.defaultInput();
+    expect(device).not.toBeNull();
+    expect(device!.isMuted).toBe(true);
   });
 
   it('defaultOutput() returns an AudioDevice with correct properties', async () => {
-    const deviceData = { id: 72, name: 'MacBook Pro Speakers', isInput: false, isOutput: true };
+    const deviceData = { id: 72, name: 'MacBook Pro Speakers', isInput: false, isOutput: true, isMuted: false };
     await startMockServer({ ok: true, result: deviceData });
     const { AudioDevice } = await import('./audiodevice.js');
 
@@ -83,6 +94,7 @@ describe('AudioDevice', () => {
     expect(device!.name).toBe('MacBook Pro Speakers');
     expect(device!.isInput).toBe(false);
     expect(device!.isOutput).toBe(true);
+    expect(device!.isMuted).toBe(false);
   });
 
   it('defaultInput() returns null when daemon returns no device error', async () => {
@@ -101,8 +113,8 @@ describe('AudioDevice', () => {
   });
 
   it('mute() sends the correct request to the daemon', async () => {
-    const deviceData = { id: 67, name: 'MacBook Pro Microphone', isInput: true, isOutput: false };
-    const _getReceived = await startCapturingServer({ ok: true, result: deviceData });
+    const deviceData = { id: 67, name: 'MacBook Pro Microphone', isInput: true, isOutput: false, isMuted: false };
+    await startCapturingServer({ ok: true, result: deviceData });
     const { AudioDevice } = await import('./audiodevice.js');
     const device = await AudioDevice.defaultInput();
 
@@ -114,7 +126,7 @@ describe('AudioDevice', () => {
   });
 
   it('unmute() sends the correct request to the daemon', async () => {
-    const deviceData = { id: 67, name: 'MacBook Pro Microphone', isInput: true, isOutput: false };
+    const deviceData = { id: 67, name: 'MacBook Pro Microphone', isInput: true, isOutput: false, isMuted: true };
     await startCapturingServer({ ok: true, result: deviceData });
     const { AudioDevice } = await import('./audiodevice.js');
     const device = await AudioDevice.defaultInput();
