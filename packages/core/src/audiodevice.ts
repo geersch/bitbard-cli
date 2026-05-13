@@ -7,6 +7,7 @@ interface AudioDeviceData {
   name: string;
   isInput: boolean;
   isOutput: boolean;
+  isMuted: boolean;
 }
 
 function isAudioDeviceData(value: unknown): value is AudioDeviceData {
@@ -16,7 +17,8 @@ function isAudioDeviceData(value: unknown): value is AudioDeviceData {
     typeof v.id === 'number' &&
     typeof v.name === 'string' &&
     typeof v.isInput === 'boolean' &&
-    typeof v.isOutput === 'boolean'
+    typeof v.isOutput === 'boolean' &&
+    typeof v.isMuted === 'boolean'
   );
 }
 
@@ -27,12 +29,14 @@ export class AudioDevice {
   readonly name: string;
   readonly isInput: boolean;
   readonly isOutput: boolean;
+  readonly isMuted: boolean;
 
   constructor(data: AudioDeviceData) {
     this.id = data.id;
     this.name = data.name;
     this.isInput = data.isInput;
     this.isOutput = data.isOutput;
+    this.isMuted = data.isMuted;
   }
 
   async mute(): Promise<void> {

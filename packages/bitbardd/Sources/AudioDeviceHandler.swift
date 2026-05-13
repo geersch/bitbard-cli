@@ -51,11 +51,18 @@ class AudioDeviceHandler {
             return .failure("audiodevice: could not read device name")
         }
 
+        let isInput = hasStreams(deviceId: deviceId, scope: kAudioObjectPropertyScopeInput)
+        let isOutput = hasStreams(deviceId: deviceId, scope: kAudioObjectPropertyScopeOutput)
+        let scope: AudioObjectPropertyScope = isInput
+            ? kAudioObjectPropertyScopeInput
+            : kAudioObjectPropertyScopeOutput
+
         let data = AudioDeviceData(
             id: deviceId,
             name: name,
-            isInput: hasStreams(deviceId: deviceId, scope: kAudioObjectPropertyScopeInput),
-            isOutput: hasStreams(deviceId: deviceId, scope: kAudioObjectPropertyScopeOutput)
+            isInput: isInput,
+            isOutput: isOutput,
+            isMuted: isMuted(deviceId: deviceId, scope: scope)
         )
         return .successData(data, encoder: encoder)
     }
@@ -84,6 +91,18 @@ class AudioDeviceHandler {
         var size: UInt32 = 0
         let status = AudioObjectGetPropertyDataSize(deviceId, &address, 0, nil, &size)
         return status == noErr && size > 0
+    }
+
+    private func isMuted(deviceId: AudioDeviceID, scope: AudioObjectPropertyScope) -> Bool {
+        var address = AudioObjectPropertyAddress(
+            mSelector: kAudioDevicePropertyMute,
+            mScope: scope,
+            mElement: kAudioObjectPropertyElementMain
+        )
+        var muteValue: UInt32 = 0
+        var size = UInt32(MemoryLayout<UInt32>.size)
+        let status = AudioObjectGetPropertyData(deviceId, &address, 0, nil, &size, &muteValue)
+        return status == noErr && muteValue != 0
     }
 
     private func setMute(deviceId: AudioDeviceID, muted: Bool) -> DaemonResponse {
@@ -128,4 +147,5 @@ struct AudioDeviceData: Codable {
     let name: String
     let isInput: Bool
     let isOutput: Bool
+    let isMuted: Bool
 }
