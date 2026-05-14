@@ -8,7 +8,11 @@ import next from './next.js';
 import now from './now.js';
 import volumeUp from './volume-up.js';
 import volumeDown from './volume-down.js';
+import login from './login.js';
+import logout from './logout.js';
 import { macosPlugin } from '../../plugins/macos.js';
+import speakers from './speakers.js';
+import speaker from './speaker.js';
 
 export default defineCommand({
   meta: {
@@ -17,11 +21,15 @@ export default defineCommand({
   },
   plugins: [macosPlugin],
   subCommands: {
+    login,
+    logout,
     launch,
     play,
     pause,
     playpause,
     previous,
+    speakers,
+    speaker,
     next,
     now,
     'volume-up': volumeUp,

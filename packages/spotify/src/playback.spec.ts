@@ -1,21 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-
-vi.mock('./applescript.js', () => ({
+vi.mock('@bitbard/core/applescript.js', () => ({
   runAppleScript: vi.fn(),
 }));
 
-import { runAppleScript } from './applescript.js';
-import { launch, playpause, previousTrack, nextTrack, getNowPlaying, volumeUp, volumeDown } from './spotify.js';
+import { runAppleScript } from '@bitbard/core/applescript.js';
+import { playpause, previousTrack, nextTrack, getNowPlaying, volumeUp, volumeDown } from './playback.js';
 
 beforeEach(() => vi.resetAllMocks());
-
-describe('launch', () => {
-  it('activates Spotify', async () => {
-    vi.mocked(runAppleScript).mockResolvedValue('');
-    await launch();
-    expect(runAppleScript).toHaveBeenCalledWith('tell application "Spotify" to activate');
-  });
-});
 
 describe('playpause', () => {
   it('sends playpause', async () => {

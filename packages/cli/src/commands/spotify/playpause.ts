@@ -1,5 +1,5 @@
 import { defineCommand } from 'citty';
-import { playpause } from '@bitbard/core/spotify.js';
+import { playpause } from '@bitbard/spotify/playback.js';
 
 export default defineCommand({
   meta: {

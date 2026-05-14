@@ -3,8 +3,7 @@
   "compilerOptions": {
     "noEmit": true,
     "paths": {
-      "@bitbard/core/*.js": ["../core/src/*.ts"],
-      "@bitbard/spotify/*.js": ["../spotify/src/*.ts"]
+      "@bitbard/core/*.js": ["../core/src/*.ts"]
     }
   },
   "include": ["src/**/*.ts"]

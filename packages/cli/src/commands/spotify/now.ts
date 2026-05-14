@@ -1,6 +1,6 @@
 import { defineCommand } from 'citty';
 import chalk from 'chalk';
-import { getNowPlaying } from '@bitbard/core/spotify.js';
+import { getNowPlaying } from '@bitbard/spotify/playback.js';
 
 export default defineCommand({
   meta: {

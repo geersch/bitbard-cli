@@ -2,6 +2,8 @@
 
 Control the Spotify application.
 
+Most commands send instructions directly to the Spotify app on your Mac via AppleScript. The [speakers](#speakers) and [speaker](#speaker) commands use the [Spotify Web API](https://developer.spotify.com/documentation/web-api) and require a Spotify Developer account and a client ID — see [login](#login) for setup.
+
 ## Table of Contents
 
 - [launch](#launch)
@@ -13,6 +15,10 @@ Control the Spotify application.
 - [now](#now)
 - [volume-up](#volume-up)
 - [volume-down](#volume-down)
+- [login](#login)
+- [logout](#logout)
+- [speakers](#speakers)
+- [speaker](#speaker)
 
 ## launch
 
@@ -85,3 +91,49 @@ Decrease Spotify volume by 5.
 ```sh
 bitbard spotify volume-down
 ```
+
+## login
+
+Log in to Spotify via OAuth to enable Web API commands. Requires a client ID from a [Spotify Developer app](https://developer.spotify.com/dashboard).
+
+```sh
+bitbard spotify login --client-id <your-client-id>
+```
+
+This opens a browser window to complete the OAuth flow. Once authenticated, credentials are stored in the macOS Keychain and reused by subsequent commands. If you are already logged in, the command exits early with a reminder to run `logout` first if you want to switch accounts.
+
+## logout
+
+Log out of Spotify, removing stored credentials.
+
+```sh
+bitbard spotify logout
+```
+
+## speakers
+
+List available [Spotify Connect](https://www.spotify.com/connect/) devices.
+
+```sh
+bitbard spotify speakers
+```
+
+Devices are retrieved via the Spotify Web API and must be active (i.e. have Spotify open) to appear. Requires [login](#login).
+
+> **Note:** Only devices that support Spotify Connect are listed. Some speaker types may not appear due to limitations of the Spotify Web API.
+
+## speaker
+
+Switch Spotify playback to a different device.
+
+```sh
+# Interactive — shows a prompt to pick a device
+bitbard spotify speaker
+
+# Direct — transfer to a specific device by ID
+bitbard spotify speaker <device-id>
+```
+
+If no device ID is provided, an interactive prompt lists all available devices and their active state. Requires [login](#login).
+
+> **Note:** Only devices that support Spotify Connect are listed. Some speaker types may not appear due to limitations of the Spotify Web API.
