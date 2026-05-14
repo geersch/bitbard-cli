@@ -1,6 +1,6 @@
 # bitbard
 
-A general-purpose CLI tool. Currently supports display controls, VPN management, and more.
+A general-purpose CLI tool. Currently supports audio controls, display controls, VPN management, and more.
 
 ## Table of Contents
 
@@ -10,6 +10,9 @@ A general-purpose CLI tool. Currently supports display controls, VPN management,
   - [Upgrading](#upgrading)
   - [Uninstalling](#uninstalling)
 - [Commands](#commands)
+  - [audio](#audio)
+    - [input](#input)
+    - [output](#output)
   - [system](#system)
     - [info](#info)
     - [lock](#lock)
@@ -96,6 +99,66 @@ Then remove the `export PATH` line added by the installer from your shell config
 
 ## Commands
 
+### audio
+
+Audio device commands.
+
+#### input
+
+Commands for the default audio input device (e.g. microphone).
+
+##### input mute
+
+Mute the default audio input device.
+
+```sh
+bitbard audio input mute
+```
+
+##### input unmute
+
+Unmute the default audio input device.
+
+```sh
+bitbard audio input unmute
+```
+
+##### input status
+
+Show the name and mute state of the default audio input device.
+
+```sh
+bitbard audio input status
+```
+
+#### output
+
+Commands for the default audio output device (e.g. speakers).
+
+##### output mute
+
+Mute the default audio output device.
+
+```sh
+bitbard audio output mute
+```
+
+##### output unmute
+
+Unmute the default audio output device.
+
+```sh
+bitbard audio output unmute
+```
+
+##### output status
+
+Show the name and mute state of the default audio output device.
+
+```sh
+bitbard audio output status
+```
+
 ### system
 
 System-related commands.
@@ -131,7 +194,7 @@ Lock the screen.
 bitbard system lock
 ```
 
-> **Note:** macOS only. Uses Apple's private API. This may stop working in a future macOS release without warning.
+> **Note:** Uses Apple's private API. This may stop working in a future macOS release without warning.
 
 #### screensaver
 
@@ -182,7 +245,7 @@ bitbard display flux
 
 Each invocation toggles the tint on or off. State is held in memory by the bitbardd daemon.
 
-> **Note:** macOS only. Requires permission to control display gamma (no additional entitlements needed beyond running as the current user).
+> **Note:** Requires permission to control display gamma (no additional entitlements needed beyond running as the current user).
 
 #### truetone
 
@@ -195,8 +258,6 @@ bitbard display truetone
 ### vpn
 
 VPN management commands.
-
-> **Note:** macOS only.
 
 #### connect
 
