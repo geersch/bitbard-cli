@@ -100,7 +100,27 @@ Log in to Spotify via OAuth to enable Web API commands. Requires a client ID fro
 bitbard spotify login --client-id <your-client-id>
 ```
 
+**Options**
+
+| Option        | Default      | Description                                |
+| ------------- | ------------ | ------------------------------------------ |
+| `--client-id` | _(required)_ | Your Spotify Developer app client ID       |
+| `--port`      | `8888`       | Local port for the OAuth redirect callback |
+
 This opens a browser window to complete the OAuth flow. Once authenticated, credentials are stored in the macOS Keychain and reused by subsequent commands. If you are already logged in, the command exits early with a reminder to run `logout` first if you want to switch accounts.
+
+**Configuring redirect URIs in your Spotify app**
+
+The OAuth callback is served on `http://127.0.0.1:<port>/callback`. You must add this exact URI to the **Redirect URIs** list in your [Spotify Developer Dashboard](https://developer.spotify.com/dashboard) app settings — otherwise Spotify will reject the login attempt.
+
+- Default: `http://127.0.0.1:8888/callback`
+- Custom port example: `http://127.0.0.1:9999/callback`
+
+Use `--port` when the default port is already in use on your machine:
+
+```sh
+bitbard spotify login --client-id <your-client-id> --port 9999
+```
 
 ## logout
 

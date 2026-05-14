@@ -13,6 +13,13 @@ export default defineCommand({
       description: 'Your Spotify Developer app client ID',
       required: true,
     },
+    port: {
+      type: 'string',
+      description:
+        'Local port for the OAuth redirect callback (default: 8888). Must match a redirect URI configured in your Spotify Developer app (e.g. http://127.0.0.1:<port>/callback).',
+      required: false,
+      default: '8888',
+    },
   },
   async run({ args }) {
     if (await isLoggedIn()) {
@@ -20,10 +27,15 @@ export default defineCommand({
       return;
     }
 
+    const port = Number(args.port);
+    if (!Number.isInteger(port) || port < 1 || port > 65535) {
+      throw new Error(`Invalid port: ${args.port}. Must be an integer between 1 and 65535.`);
+    }
+
     const s = spinner();
     s.start('Waiting for Spotify login in browser…');
     try {
-      await login(args['client-id']);
+      await login(args['client-id'], port);
     } catch (err) {
       s.stop('Login failed');
       throw err;

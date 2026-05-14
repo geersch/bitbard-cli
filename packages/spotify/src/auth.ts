@@ -5,7 +5,7 @@ import { get, set, del } from '@bitbard/core/security/keychain.js';
 import { SpotifyNotLoggedInError, SpotifySessionExpiredError } from './errors.js';
 
 const SERVICE = 'bitbard-spotify';
-const REDIRECT_URI = 'http://127.0.0.1:8888/callback';
+const DEFAULT_PORT = 8888;
 const SCOPES = 'user-read-playback-state user-modify-playback-state';
 const TOKEN_URL = 'https://accounts.spotify.com/api/token';
 const AUTH_URL = 'https://accounts.spotify.com/authorize';
@@ -20,10 +20,10 @@ function generateCodeChallenge(verifier: string): string {
   return createHash('sha256').update(verifier).digest('base64url');
 }
 
-function waitForCode(): Promise<string> {
+function waitForCode(port: number): Promise<string> {
   return new Promise((resolve, reject) => {
     const server = createServer((req, res) => {
-      const url = new URL(req.url ?? '/', `http://127.0.0.1:8888`);
+      const url = new URL(req.url ?? '/', `http://127.0.0.1:${port}`);
       const code = url.searchParams.get('code');
       const error = url.searchParams.get('error');
       res.end('<html><body>You can close this tab.</body></html>');
@@ -33,7 +33,7 @@ function waitForCode(): Promise<string> {
       else if (code) resolve(code);
       else reject(new Error('No code received from Spotify'));
     });
-    server.listen(8888, '127.0.0.1', () => {});
+    server.listen(port, '127.0.0.1', () => {});
     server.on('error', (err) => reject(err));
   });
 }
@@ -42,11 +42,12 @@ async function exchangeCode(
   code: string,
   codeVerifier: string,
   clientId: string,
+  redirectUri: string,
 ): Promise<{ accessToken: string; refreshToken: string; expiresAt: number }> {
   const body = new URLSearchParams({
     grant_type: 'authorization_code',
     code,
-    redirect_uri: REDIRECT_URI,
+    redirect_uri: redirectUri,
     client_id: clientId,
     code_verifier: codeVerifier,
   });
@@ -93,24 +94,25 @@ async function refreshTokens(
   };
 }
 
-export async function login(clientId: string): Promise<void> {
+export async function login(clientId: string, port: number = DEFAULT_PORT): Promise<void> {
+  const redirectUri = `http://127.0.0.1:${port}/callback`;
   const verifier = generateCodeVerifier();
   const challenge = generateCodeChallenge(verifier);
 
   const params = new URLSearchParams({
     client_id: clientId,
     response_type: 'code',
-    redirect_uri: REDIRECT_URI,
+    redirect_uri: redirectUri,
     code_challenge_method: 'S256',
     code_challenge: challenge,
     scope: SCOPES,
   });
 
-  const codePromise = waitForCode();
+  const codePromise = waitForCode(port);
   await open(`${AUTH_URL}?${params}`);
   const code = await codePromise;
 
-  const { accessToken, refreshToken, expiresAt } = await exchangeCode(code, verifier, clientId);
+  const { accessToken, refreshToken, expiresAt } = await exchangeCode(code, verifier, clientId, redirectUri);
 
   await Promise.allSettled([
     set(SERVICE, 'client_id', clientId),
