@@ -1,10 +1,6 @@
-import { runAppleScript } from './applescript.js';
+import { runAppleScript } from '@bitbard/core/applescript.js';
 
 const tell = (cmd: string): Promise<string> => runAppleScript(`tell application "Spotify" to ${cmd}`);
-
-export async function launch(): Promise<void> {
-  await runAppleScript('tell application "Spotify" to activate');
-}
 
 export async function play(): Promise<void> {
   await tell('play');

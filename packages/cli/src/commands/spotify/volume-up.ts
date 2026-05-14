@@ -1,5 +1,5 @@
 import { defineCommand } from 'citty';
-import { volumeUp } from '@bitbard/core/spotify.js';
+import { volumeUp } from '@bitbard/spotify/playback.js';
 
 export default defineCommand({
   meta: {

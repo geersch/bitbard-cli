@@ -1,5 +1,5 @@
 import { defineCommand } from 'citty';
-import { nextTrack } from '@bitbard/core/spotify.js';
+import { nextTrack } from '@bitbard/spotify/playback.js';
 
 export default defineCommand({
   meta: {

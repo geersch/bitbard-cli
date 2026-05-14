@@ -1,28 +1,23 @@
 {
-  "name": "@bitbard/cli",
+  "name": "@bitbard/spotify",
   "private": true,
   "type": "module",
-  "bin": {
-    "bitbard": "./dist/bitbard.js"
+  "exports": {
+    "./*": "./src/*.ts"
   },
   "scripts": {
-    "build": "rolldown -c",
     "check-types": "tsc --noEmit",
     "test": "vitest run"
   },
   "dependencies": {
     "@bitbard/core": "workspace:*",
-    "@bitbard/spotify": "workspace:*",
-    "@clack/prompts": "catalog:",
-    "chalk": "catalog:",
-    "citty": "catalog:"
+    "open": "catalog:"
   },
   "devDependencies": {
     "@bitbard/typescript-config": "workspace:*",
     "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
     "typescript": "catalog:",
-    "rolldown": "catalog:",
-    "vitest": "catalog:",
-    "@vitest/coverage-v8": "catalog:"
+    "vitest": "catalog:"
   }
 }

@@ -7,8 +7,11 @@ vi.mock('@bitbard/core/platform.js', () => ({
   isMacOS: vi.fn().mockReturnValue(false),
 }));
 
-vi.mock('@bitbard/core/spotify.js', () => ({
+vi.mock('@bitbard/spotify/app.js', () => ({
   launch: vi.fn(),
+}));
+
+vi.mock('@bitbard/spotify/playback.js', () => ({
   play: vi.fn(),
   pause: vi.fn(),
   playpause: vi.fn(),
@@ -32,6 +35,18 @@ vi.mock('@bitbard/core/applescript.js', () => ({
 
 vi.mock('@bitbard/core/daemon.js', () => ({
   sendCommand: vi.fn().mockResolvedValue({ ok: true, result: 'ok' }),
+}));
+
+vi.mock('@bitbard/spotify/auth.js', () => ({
+  login: vi.fn(),
+  logout: vi.fn(),
+  isLoggedIn: vi.fn().mockResolvedValue(false),
+  getAccessToken: vi.fn(),
+}));
+
+vi.mock('@bitbard/spotify/devices.js', () => ({
+  getDevices: vi.fn().mockResolvedValue([]),
+  transferPlayback: vi.fn(),
 }));
 
 // Mock all clack/prompts symbols used by leaf commands so nothing blocks.
