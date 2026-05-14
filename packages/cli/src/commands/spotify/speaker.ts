@@ -1,7 +1,9 @@
 import { defineCommand } from 'citty';
 import { select, isCancel } from '@clack/prompts';
 import chalk from 'chalk';
-import { getDevices, transferPlayback } from '@bitbard/spotify/devices.js';
+import { getDevices, SpotifyDevice, transferPlayback } from '@bitbard/spotify/devices.js';
+import { isLoggedIn } from '@bitbard/spotify/auth';
+import { SpotifyNotLoggedInError } from '@bitbard/spotify/errors';
 
 export default defineCommand({
   meta: {
@@ -16,7 +18,22 @@ export default defineCommand({
     },
   },
   async run({ args }) {
-    const devices = await getDevices();
+    if (!(await isLoggedIn())) {
+      console.log('Spotify login required. Run: bitbard spotify login to log in.');
+      return;
+    }
+
+    let devices: SpotifyDevice[];
+    try {
+      devices = await getDevices();
+    } catch (err) {
+      if (err instanceof SpotifyNotLoggedInError) {
+        console.error('Spotify login required. Run: bitbard spotify login to log in.');
+        return;
+      } else {
+        throw err;
+      }
+    }
 
     if (devices.length === 0) {
       console.log('No devices found. Open Spotify on a device first.');
@@ -26,7 +43,7 @@ export default defineCommand({
     if (args.id) {
       const device = devices.find((d) => d.id === args.id);
       if (!device) {
-        console.log(chalk.red(`No device with ID "${args.id}" found.`));
+        console.error(chalk.red(`No device with ID "${args.id}" found.`));
         return;
       }
       await transferPlayback(device.id);

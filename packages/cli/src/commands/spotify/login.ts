@@ -29,7 +29,8 @@ export default defineCommand({
 
     const port = Number(args.port);
     if (!Number.isInteger(port) || port < 1 || port > 65535) {
-      throw new Error(`Invalid port: ${args.port}. Must be an integer between 1 and 65535.`);
+      console.error(`Invalid port: ${args.port}. Must be an integer between 1 and 65535.`);
+      return;
     }
 
     const s = spinner();
