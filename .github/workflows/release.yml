@@ -58,9 +58,9 @@ jobs:
       - name: Package release assets
         if: steps.check_release.outputs.EXISTS == 'false'
         run: |
-          mkdir -p staging/bin
+          mkdir -p staging
           cp bitbard staging/
-          cp packages/cli/dist/bin/* staging/bin/
+          cp packages/bitbardd/dist/bitbardd staging/
           tar -czf bitbard-darwin-arm64.tar.gz -C staging .
 
       - name: Create GitHub Release
