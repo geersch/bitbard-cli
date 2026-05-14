@@ -122,9 +122,14 @@ describe('spotify volume-down', () => {
 });
 
 describe('spotify login', () => {
-  it('calls login() with provided client-id', async () => {
+  it('calls login() with provided client-id and default port', async () => {
     await runCommand(loginCmd, { rawArgs: ['--client-id', 'my-id'] });
-    expect(spotifyAuth.login).toHaveBeenCalledWith('my-id');
+    expect(spotifyAuth.login).toHaveBeenCalledWith('my-id', 8888);
+  });
+
+  it('calls login() with provided client-id and custom port', async () => {
+    await runCommand(loginCmd, { rawArgs: ['--client-id', 'my-id', '--port', '9999'] });
+    expect(spotifyAuth.login).toHaveBeenCalledWith('my-id', 9999);
   });
 
   it('prints message and skips login if already logged in', async () => {
