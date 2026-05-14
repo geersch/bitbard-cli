@@ -111,12 +111,14 @@ This opens a browser window to complete the OAuth flow. Once authenticated, cred
 
 **Configuring redirect URIs in your Spotify app**
 
-The OAuth callback is served on `http://127.0.0.1:<port>/callback`. You must add this exact URI to the **Redirect URIs** list in your [Spotify Developer Dashboard](https://developer.spotify.com/dashboard) app settings — otherwise Spotify will reject the login attempt.
+Add the redirect URI for each port you intend to use to the **Redirect URIs** list in your [Spotify Developer Dashboard](https://developer.spotify.com/dashboard) app settings. The [Spotify redirect URI docs](https://developer.spotify.com/documentation/web-api/concepts/redirect_uri) describe support for port-less loopback registration, but in practice the dashboard requires a port. Register the URI with the exact port you plan to use:
 
 - Default: `http://127.0.0.1:8888/callback`
 - Custom port example: `http://127.0.0.1:9999/callback`
 
-Use `--port` when the default port is already in use on your machine:
+> **Note:** `localhost` is not an accepted redirect URI — use `127.0.0.1` explicitly.
+
+Use `--port` when the default port (`8888`) is already in use on your machine:
 
 ```sh
 bitbard spotify login --client-id <your-client-id> --port 9999
