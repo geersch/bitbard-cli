@@ -10,7 +10,7 @@ import volumeUp from './volume-up.js';
 import volumeDown from './volume-down.js';
 import login from './login.js';
 import logout from './logout.js';
-import { macosPlugin } from '../../plugins/macos.js';
+import { macosPlugin } from '../../plugins/macos.plugin.js';
 import speakers from './speakers.js';
 import speaker from './speaker.js';
 

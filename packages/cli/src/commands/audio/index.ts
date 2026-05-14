@@ -1,5 +1,5 @@
 import { defineCommand } from 'citty';
-import { macosPlugin } from '../../plugins/macos.js';
+import { macosPlugin } from '../../plugins/macos.plugin.js';
 import input from './input/index.js';
 import output from './output/index.js';
 

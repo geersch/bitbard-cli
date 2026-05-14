@@ -3,7 +3,7 @@ import list from './list.js';
 import status from './status.js';
 import connect from './connect.js';
 import disconnect from './disconnect.js';
-import { macosPlugin } from '../../plugins/macos.js';
+import { macosPlugin } from '../../plugins/macos.plugin.js';
 
 export default defineCommand({
   meta: {

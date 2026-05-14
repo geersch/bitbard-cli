@@ -1,7 +1,7 @@
 import { defineCommand } from 'citty';
 import { sendCommand } from '@bitbard/core/daemon.js';
 import chalk from 'chalk';
-import { macosPlugin } from '../../plugins/macos.js';
+import { macosPlugin } from '../../plugins/macos.plugin.js';
 
 export default defineCommand({
   meta: {

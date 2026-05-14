@@ -1,5 +1,5 @@
 import { defineCommand } from 'citty';
-import { macosPlugin } from '../../../plugins/macos.js';
+import { macosPlugin } from '../../../plugins/macos.plugin.js';
 import mute from './mute.js';
 import unmute from './unmute.js';
 import status from './status.js';

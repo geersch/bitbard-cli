@@ -1,5 +1,5 @@
 import { defineCommand } from 'citty';
-import { macosPlugin } from '../../plugins/macos.js';
+import { macosPlugin } from '../../plugins/macos.plugin.js';
 import { startScreensaver } from '@bitbard/core/caffeinate.js';
 
 export default defineCommand({
