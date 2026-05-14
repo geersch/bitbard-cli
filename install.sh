@@ -223,10 +223,10 @@ chmod 755 "${INSTALL_BIN_DIR}/${APP}"
 bb_echo "=> Installed ${APP} to ${INSTALL_BIN_DIR}/${APP}"
 
 # Install bitbardd daemon (may not exist on all platforms / in all releases)
-if [[ -d "${tmp_dir}/bin" ]]; then
+if [[ -f "${tmp_dir}/bitbardd" ]]; then
   mkdir -p "$INSTALL_DATA_DIR"
-  cp -r "${tmp_dir}/bin/." "$INSTALL_DATA_DIR/"
-  chmod 755 "${INSTALL_DATA_DIR}"/*
+  cp "${tmp_dir}/bitbardd" "${INSTALL_DATA_DIR}/bitbardd"
+  chmod 755 "${INSTALL_DATA_DIR}/bitbardd"
   bb_echo "=> Installed bitbardd to ${INSTALL_DATA_DIR}"
   bb_install_launchagent
 fi
