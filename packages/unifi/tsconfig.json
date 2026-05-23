@@ -1,0 +1,10 @@
+{
+  "extends": "@bitbard/typescript-config/base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "paths": {
+      "@bitbard/core/*.js": ["../core/src/*.ts"]
+    }
+  },
+  "include": ["src/**/*.ts"]
+}

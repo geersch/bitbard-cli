@@ -13,6 +13,7 @@
   "dependencies": {
     "@bitbard/core": "workspace:*",
     "@bitbard/spotify": "workspace:*",
+    "@bitbard/unifi": "workspace:*",
     "@clack/prompts": "catalog:",
     "chalk": "catalog:",
     "citty": "catalog:"

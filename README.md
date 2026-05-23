@@ -14,6 +14,7 @@ A general-purpose CLI tool. Currently supports audio controls, display controls,
   - [display](docs/commands/display.md)
   - [spotify](docs/commands/spotify.md)
   - [system](docs/commands/system.md)
+  - [unifi](docs/commands/unifi.md)
   - [vpn](docs/commands/vpn.md)
 
 ## Installing and Upgrading
@@ -83,4 +84,5 @@ Then remove the `export PATH` line added by the installer from your shell config
 | [display](docs/commands/display.md) | Display-related commands        |
 | [spotify](docs/commands/spotify.md) | Control the Spotify application |
 | [system](docs/commands/system.md)   | System-related commands         |
+| [unifi](docs/commands/unifi.md)     | Control UniFi devices           |
 | [vpn](docs/commands/vpn.md)         | VPN management commands         |

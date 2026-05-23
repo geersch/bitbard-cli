@@ -1,0 +1,23 @@
+{
+  "name": "@bitbard/unifi",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./*.js": "./src/*.ts",
+    "./*": "./src/*.ts"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@bitbard/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@bitbard/typescript-config": "workspace:*",
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
