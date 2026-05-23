@@ -150,6 +150,10 @@ describe('spotify logout', () => {
 });
 
 describe('spotify speakers', () => {
+  beforeEach(() => {
+    vi.mocked(spotifyAuth.isLoggedIn).mockResolvedValue(true);
+  });
+
   it('prints device list with active marker', async () => {
     vi.mocked(spotifyDevices.getDevices).mockResolvedValue(mockDevices);
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
@@ -170,6 +174,10 @@ describe('spotify speakers', () => {
 });
 
 describe('spotify speaker (no argument)', () => {
+  beforeEach(() => {
+    vi.mocked(spotifyAuth.isLoggedIn).mockResolvedValue(true);
+  });
+
   it('shows select prompt and transfers playback on selection', async () => {
     vi.mocked(spotifyDevices.getDevices).mockResolvedValue(mockDevices);
     vi.mocked(clack.isCancel).mockReturnValue(false);
@@ -212,6 +220,10 @@ describe('spotify speaker (no argument)', () => {
 });
 
 describe('spotify speaker <id>', () => {
+  beforeEach(() => {
+    vi.mocked(spotifyAuth.isLoggedIn).mockResolvedValue(true);
+  });
+
   it('transfers to matching device without showing prompt', async () => {
     vi.mocked(spotifyDevices.getDevices).mockResolvedValue(mockDevices);
     const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
@@ -224,10 +236,10 @@ describe('spotify speaker <id>', () => {
 
   it('prints error when ID does not match any device', async () => {
     vi.mocked(spotifyDevices.getDevices).mockResolvedValue(mockDevices);
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     await runCommand(speakerCmd, { rawArgs: ['unknown-id'] });
     expect(spotifyDevices.transferPlayback).not.toHaveBeenCalled();
-    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('unknown-id'));
-    logSpy.mockRestore();
+    expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('unknown-id'));
+    errorSpy.mockRestore();
   });
 });

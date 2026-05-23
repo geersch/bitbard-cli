@@ -2,8 +2,8 @@ import { defineCommand } from 'citty';
 import { select, isCancel } from '@clack/prompts';
 import chalk from 'chalk';
 import { getDevices, SpotifyDevice, transferPlayback } from '@bitbard/spotify/devices.js';
-import { isLoggedIn } from '@bitbard/spotify/auth';
-import { SpotifyNotLoggedInError } from '@bitbard/spotify/errors';
+import { isLoggedIn } from '@bitbard/spotify/auth.js';
+import { SpotifyNotLoggedInError } from '@bitbard/spotify/errors.js';
 
 export default defineCommand({
   meta: {
