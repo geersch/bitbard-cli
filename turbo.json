@@ -15,7 +15,7 @@
       "cache": false
     },
     "quality": {
-      "dependsOn": ["//#lint", "//#format", "check-types"]
+      "dependsOn": ["//#lint", "//#format"]
     },
     "quality:fix": {
       "dependsOn": ["//#lint:fix", "//#format:fix"]

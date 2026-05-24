@@ -25,17 +25,17 @@ The build bundles `packages/cli/src/bitbard.ts` via rolldown into `packages/cli/
 
 ## Key Scripts
 
-| Script                | Description                               |
-| --------------------- | ----------------------------------------- |
-| `bun run build`       | Build all packages                        |
-| `bun run test`        | Run all tests                             |
-| `bun run check-types` | TypeScript type checking (`tsc --noEmit`) |
-| `bun run lint`        | Run oxlint                                |
-| `bun run lint:fix`    | Auto-fix lint issues                      |
-| `bun run format`      | Check formatting with oxfmt               |
-| `bun run format:fix`  | Auto-fix formatting                       |
-| `bun run quality`     | Run lint + format checks                  |
-| `bun run quality:fix` | Auto-fix lint and formatting              |
+| Script                | Description                                |
+| --------------------- | ------------------------------------------ |
+| `bun run build`       | Build all packages                         |
+| `bun run test`        | Run all tests                              |
+| `bun run check-types` | TypeScript type checking (`tsgo --noEmit`) |
+| `bun run lint`        | Run oxlint                                 |
+| `bun run lint:fix`    | Auto-fix lint issues                       |
+| `bun run format`      | Check formatting with oxfmt                |
+| `bun run format:fix`  | Auto-fix formatting                        |
+| `bun run quality`     | Run lint + format checks                   |
+| `bun run quality:fix` | Auto-fix lint and formatting               |
 
 ## Testing
 
