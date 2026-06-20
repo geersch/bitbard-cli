@@ -39,7 +39,7 @@ describe('getSystemInfo', () => {
       const response = responses[cmd as string];
       if (cb) {
         if (response instanceof Error) {
-          cb(response, '', '');
+          cb(Object.assign(response, { cmd: cmd as string }), '', '');
         } else {
           cb(null, response ?? '', '');
         }
