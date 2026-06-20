@@ -5,6 +5,7 @@ import display from './commands/display/index.js';
 import spotify from './commands/spotify/index.js';
 import system from './commands/system/index.js';
 import unifi from './commands/unifi/index.js';
+import network from './commands/network/index.js';
 import vpn from './commands/vpn/index.js';
 import upgrade from './commands/upgrade.js';
 
@@ -17,6 +18,7 @@ const main = defineCommand({
   subCommands: {
     audio,
     display,
+    network,
     spotify,
     system,
     unifi,
