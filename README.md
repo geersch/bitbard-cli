@@ -16,6 +16,7 @@ A general-purpose CLI tool. Currently supports audio controls, display controls,
   - [system](docs/commands/system.md)
   - [unifi](docs/commands/unifi.md)
   - [vpn](docs/commands/vpn.md)
+- [Ideas](docs/ideas.md)
 
 ## Installing and Upgrading
 
@@ -86,3 +87,7 @@ Then remove the `export PATH` line added by the installer from your shell config
 | [system](docs/commands/system.md)   | System-related commands         |
 | [unifi](docs/commands/unifi.md)     | Control UniFi devices           |
 | [vpn](docs/commands/vpn.md)         | VPN management commands         |
+
+## Ideas
+
+Potential new commands and features are tracked in [docs/ideas.md](docs/ideas.md).
