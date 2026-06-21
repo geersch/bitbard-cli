@@ -1,10 +1,14 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { getLocalIp, getPublicIp } from './network.js';
+import { getLocalIp, getPublicIp, getPortProcesses, killProcess } from './network.js';
 
 vi.mock('node:os', () => ({
   default: {
     networkInterfaces: vi.fn(),
   },
+}));
+
+vi.mock('node:child_process', () => ({
+  execFile: vi.fn(),
 }));
 
 describe('getLocalIp', () => {
@@ -102,5 +106,102 @@ describe('getPublicIp', () => {
     vi.spyOn(globalThis, 'fetch').mockRejectedValueOnce(new DOMException('The operation was aborted.', 'AbortError'));
 
     expect(await getPublicIp()).toBeNull();
+  });
+});
+
+describe('getPortProcesses', () => {
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('returns parsed processes from lsof output', async () => {
+    const { execFile } = await import('node:child_process');
+    vi.mocked(execFile).mockImplementation((_cmd, _args, cb: any) => {
+      cb(
+        null,
+        [
+          'COMMAND    PID    USER   FD   TYPE   DEVICE SIZE/OFF NODE NAME',
+          'node      1234 user    9u  IPv4   0x1234      0t0  TCP *:3000 (LISTEN)',
+          'node      1234 user   10u  IPv6   0x5678      0t0  TCP *:3000 (LISTEN)',
+        ].join('\n'),
+        '',
+      );
+      return {} as any;
+    });
+
+    const result = await getPortProcesses(3000);
+
+    expect(result).toEqual([{ pid: 1234, name: 'node', socket: '*:3000' }]);
+  });
+
+  it('returns empty array when lsof finds nothing (exit code string "1")', async () => {
+    const { execFile } = await import('node:child_process');
+    const err = Object.assign(new Error('no matches'), { code: '1' });
+    vi.mocked(execFile).mockImplementation((_cmd, _args, cb: any) => {
+      cb(err, '', '');
+      return {} as any;
+    });
+
+    const result = await getPortProcesses(3000);
+
+    expect(result).toEqual([]);
+  });
+
+  it('returns empty array when lsof finds nothing (exit code numeric 1)', async () => {
+    const { execFile } = await import('node:child_process');
+    const err = Object.assign(new Error('no matches'), { code: 1 });
+    vi.mocked(execFile).mockImplementation((_cmd, _args, cb: any) => {
+      cb(err, '', '');
+      return {} as any;
+    });
+
+    const result = await getPortProcesses(3000);
+
+    expect(result).toEqual([]);
+  });
+
+  it('returns empty array when lsof output is empty', async () => {
+    const { execFile } = await import('node:child_process');
+    vi.mocked(execFile).mockImplementation((_cmd, _args, cb: any) => {
+      cb(null, '', '');
+      return {} as any;
+    });
+
+    const result = await getPortProcesses(3000);
+
+    expect(result).toEqual([]);
+  });
+
+  it('throws on unexpected exec error (e.g. lsof not found)', async () => {
+    const { execFile } = await import('node:child_process');
+    const err = Object.assign(new Error('spawn lsof ENOENT'), { code: 'ENOENT' });
+    vi.mocked(execFile).mockImplementation((_cmd, _args, cb: any) => {
+      cb(err, '', '');
+      return {} as any;
+    });
+
+    await expect(getPortProcesses(3000)).rejects.toThrow('spawn lsof ENOENT');
+  });
+});
+
+describe('killProcess', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('sends SIGTERM to the given PID', () => {
+    const killSpy = vi.spyOn(process, 'kill').mockImplementation(() => true);
+
+    killProcess(1234);
+
+    expect(killSpy).toHaveBeenCalledWith(1234, 'SIGTERM');
+  });
+
+  it('throws when process.kill throws (e.g. EPERM)', () => {
+    vi.spyOn(process, 'kill').mockImplementation(() => {
+      throw Object.assign(new Error('EPERM'), { code: 'EPERM' });
+    });
+
+    expect(() => killProcess(1234)).toThrow('EPERM');
   });
 });
